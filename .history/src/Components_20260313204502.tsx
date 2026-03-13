@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
-  RefreshCw, History, Loader2, Hash, Users, Bug, Check, CheckSquare, 
+  RefreshCw, History, Loader2, Hash, Users, Bug, Check, CheckSquare, // <-- Добавлен CheckSquare
   BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, Copy, Download, Upload
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -20,6 +20,9 @@ const Toggle = ({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   </button>
 );
 
+// ==========================================
+// 1. SETTINGS ROW (С фиксом длинных email)
+// ==========================================
 const SettingsRow = ({ label, icon, bgColor, children }: { label: string; icon: React.ReactNode; bgColor: string; children: React.ReactNode }) => (
   <div className="flex items-center justify-between py-3 border-b border-white/10 last:border-0 min-h-[44px]">
     <div className="flex items-center gap-3 shrink-0 mr-4">
@@ -28,7 +31,7 @@ const SettingsRow = ({ label, icon, bgColor, children }: { label: string; icon: 
       </div>
       <span className="text-[17px] tracking-tight whitespace-nowrap">{label}</span>
     </div>
-    <div className="flex-1 flex justify-end min-w-0">
+    <div className="flex-1 flex justify-end min-w-0"> {/* min-w-0 позволяет детям сжиматься */}
       {children}
     </div>
   </div>
@@ -142,7 +145,7 @@ export const SettingsModal = ({
         <p className="text-[13px] text-white/40 uppercase mt-6 mb-2 ml-4 tracking-tight">{t.langSection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden">
           <SettingsRow label={t.interfaceLang} icon={<Globe />} bgColor="bg-[#007AFF]">
-            <div className="flex bg-[var(--bg-surface-elevated)] p-0.5 rounded-lg shrink-0">
+            <div className="flex bg-[var(--bg-surface-elevated)] p-0.5 rounded-lg">
               {(['ru', 'en', 'de'] as const).map(l => (
                 <button key={l} onClick={() => setAppLang(l)} className={`px-3 py-1 rounded-md text-[13px] font-bold ${appLang === l ? 'bg-[#636366] text-white shadow-sm' : 'text-white/40'}`}>
                   {l.toUpperCase()}
@@ -150,21 +153,21 @@ export const SettingsModal = ({
               ))}
             </div>
           </SettingsRow>
-          <SettingsRow label={t.translateToGerman} icon={<ArrowRight />} bgColor="bg-[#5856D6]">
-            <Toggle checked={!skipTranslation} onChange={(v) => { setSkipTranslation(!v); localStorage.setItem('skipTrans', String(!v)); }} />
+          <SettingsRow label={t.skipTrans} icon={<ArrowRight />} bgColor="bg-[#5856D6]">
+            <Toggle checked={skipTranslation} onChange={(v) => { setSkipTranslation(v); localStorage.setItem('skipTrans', String(v)); }} />
           </SettingsRow>
         </div>
 
         <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">{t.identitySection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden">
           <SettingsRow label={t.organizer} icon={<Mail />} bgColor="bg-[#FF9500]">
-            <input type="email" value={local.organizerEmail} onChange={e => setLocal({...local, organizerEmail: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="email@example.com" />
+            <input type="email" value={local.organizerEmail} onChange={e => setLocal({...local, organizerEmail: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20" placeholder="email@example.com" />
           </SettingsRow>
           <SettingsRow label={t.defaultGuests} icon={<Users />} bgColor="bg-[#007AFF]">
-            <input type="text" value={local.defaultGuests} onChange={e => setLocal({...local, defaultGuests: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="guest1@mail.com" />
+            <input type="text" value={local.defaultGuests} onChange={e => setLocal({...local, defaultGuests: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20" placeholder="guest1@mail.com" />
           </SettingsRow>
           <SettingsRow label={t.calendarId} icon={<Hash />} bgColor="bg-[#FF3B30]">
-            <input type="text" value={local.calendarId} onChange={e => setLocal({...local, calendarId: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="primary" />
+            <input type="text" value={local.calendarId} onChange={e => setLocal({...local, calendarId: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20" placeholder="primary" />
           </SettingsRow>
         </div>
 
@@ -172,24 +175,25 @@ export const SettingsModal = ({
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden">
           <div className="py-3 border-b border-white/10">
              <div className="flex items-center gap-3 mb-1"><div className="w-7 h-7 rounded-md bg-[#8E8E93] flex items-center justify-center text-white"><LinkIcon size={16} /></div><span className="text-[17px]">{t.decodeWebhook}</span></div>
-             <input type="url" value={local.decodeWebhook} onChange={e => setLocal({...local, decodeWebhook: e.target.value})} className="bg-transparent outline-none text-[#0A84FF] text-[14px] font-mono w-full placeholder:text-[#0A84FF]/40 truncate" placeholder="https://hook.make.com/..." />
+             <input type="url" value={local.decodeWebhook} onChange={e => setLocal({...local, decodeWebhook: e.target.value})} className="bg-transparent outline-none text-[#0A84FF] text-[14px] font-mono w-full placeholder:text-[#0A84FF]/40" placeholder="https://hook.make.com/..." />
           </div>
-          <div className="py-3">
+          <div className="py-3 border-b border-white/10">
              <div className="flex items-center gap-3 mb-1"><div className="w-7 h-7 rounded-md bg-[#8E8E93] flex items-center justify-center text-white"><LinkIcon size={16} /></div><span className="text-[17px]">{t.saveWebhook}</span></div>
-             <input type="url" value={local.saveWebhook} onChange={e => setLocal({...local, saveWebhook: e.target.value})} className="bg-transparent outline-none text-[#0A84FF] text-[14px] font-mono w-full placeholder:text-[#0A84FF]/40 truncate" placeholder="https://hook.make.com/..." />
+             <input type="url" value={local.saveWebhook} onChange={e => setLocal({...local, saveWebhook: e.target.value})} className="bg-transparent outline-none text-[#0A84FF] text-[14px] font-mono w-full placeholder:text-[#0A84FF]/40" placeholder="https://hook.make.com/..." />
           </div>
+          <button onClick={() => { onClose(); onOpenSyncModal(); }} className="w-full flex items-center py-3 text-[var(--primary)] gap-3">
+             <div className="w-7 h-7 rounded-md bg-[var(--primary)] flex items-center justify-center text-white"><History size={16} /></div>
+             <span className="text-[17px] font-medium">{t.syncHistory}</span>
+          </button>
         </div>
 
-        <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">{t.addressesSection}</p>
+        <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">{t.backupSection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden flex flex-col">
-          <button onClick={() => { onClose(); onOpenSyncModal(); }} className="flex items-center gap-3 py-3 border-b border-white/10 text-[var(--primary)] active:opacity-50 transition-opacity">
-             <div className="w-7 h-7 rounded-md bg-[var(--primary)] flex items-center justify-center text-white"><RefreshCw size={16} /></div>
-             <span className="text-[17px] font-medium">{t.fetchAddresses}</span>
-          </button>
           <button onClick={exportBackup} className="flex items-center gap-3 py-3 border-b border-white/10 text-[#0A84FF] active:opacity-50 transition-opacity">
             <div className="w-7 h-7 rounded-md bg-[#0A84FF] flex items-center justify-center text-white"><Download size={16} /></div>
             <span className="text-[17px] font-medium">{t.exportBackup}</span>
           </button>
+          
           <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-3 py-3 text-[#FF9500] active:opacity-50 transition-opacity">
             <div className="w-7 h-7 rounded-md bg-[#FF9500] flex items-center justify-center text-white"><Upload size={16} /></div>
             <span className="text-[17px] font-medium">{t.restoreBackup}</span>
@@ -355,7 +359,7 @@ export const PlacesDatabaseModal = ({
 };
 
 // ==========================================
-// 5. REVIEW SCREEN 
+// 5. REVIEW SCREEN (ART DIRECTOR APPROVED)
 // ==========================================
 export const InputRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="flex items-center justify-between px-4 py-4 border-b border-white/10 last:border-0 min-h-[56px]">
@@ -480,7 +484,7 @@ export const ReviewScreen = ({
 );
 
 // ==========================================
-// 8. TASKS LIST MODAL
+// 8. TASKS LIST MODAL (Хвосты)
 // ==========================================
 export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule, t }: { 
   open: boolean; onClose: () => void; tasks: ParsedEvent[]; onMarkDone: (id: number) => void; onReschedule: (task: ParsedEvent) => void; t: Dictionary;
@@ -497,34 +501,50 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
 
   return (
     <div className="fixed inset-0 z-[400] bg-[var(--bg-main)] flex flex-col pt-safe">
-      <div className="flex items-center justify-between px-4 h-14 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0">
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-4 h-14 border-b border-white/5 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0">
         <button onClick={onClose} className="text-[var(--primary)] text-[17px] font-medium">{t.cancel}</button>
         <h2 className="text-[17px] font-semibold flex items-center gap-2">
-          <CheckSquare className="w-5 h-5 text-[var(--primary)]" /> {t.tasksTitle}
+          <History className="w-5 h-5 text-[var(--primary)]" /> {t.tasksTitle}
         </h2>
         <div className="w-[60px]" /> 
       </div>
 
-      <div className="flex px-6 pt-2 pb-0 shrink-0 border-b border-white/10">
-        <button 
-          onClick={() => { setActiveTab('overdue'); setExpandedId(null); }}
-          className={`flex-1 pb-3 text-[13px] uppercase tracking-widest font-bold transition-all border-b-2 ${
-            activeTab === 'overdue' ? 'text-[var(--primary)] border-[var(--primary)]' : 'text-white/40 border-transparent hover:text-white/60'
-          }`}
-        >
-          {t.overdue} <span className="ml-1 opacity-50">({overdueTasks.length})</span>
-        </button>
-        <button 
-          onClick={() => { setActiveTab('upcoming'); setExpandedId(null); }}
-          className={`flex-1 pb-3 text-[13px] uppercase tracking-widest font-bold transition-all border-b-2 ${
-            activeTab === 'upcoming' ? 'text-[var(--primary)] border-[var(--primary)]' : 'text-white/40 border-transparent hover:text-white/60'
-          }`}
-        >
-          {t.upcoming} <span className="ml-1 opacity-50">({upcomingTasks.length})</span>
-        </button>
+      {/* TABS */}
+      <div className="px-4 py-5 shrink-0">
+        <div className="flex items-center p-1 bg-[var(--bg-surface)] rounded-[11px] w-full shadow-inner">
+          <button 
+            onClick={() => { setActiveTab('overdue'); setExpandedId(null); }}
+            className={`flex-1 flex items-center justify-center h-[34px] gap-2 rounded-[8px] transition-all duration-200 ${
+              activeTab === 'overdue' ? 'bg-[#636366] shadow-md text-white' : 'text-white/50 hover:text-white/80'
+            }`}
+          >
+            <span className="text-[14px] font-semibold">{t.overdue}</span>
+            <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold min-w-[20px] text-center ${
+              activeTab === 'overdue' ? 'bg-black/20 text-white' : 'bg-white/5 text-[var(--danger)]'
+            }`}>
+              {overdueTasks.length}
+            </span>
+          </button>
+
+          <button 
+            onClick={() => { setActiveTab('upcoming'); setExpandedId(null); }}
+            className={`flex-1 flex items-center justify-center h-[34px] gap-2 rounded-[8px] transition-all duration-200 ${
+              activeTab === 'upcoming' ? 'bg-[#636366] shadow-md text-white' : 'text-white/50 hover:text-white/80'
+            }`}
+          >
+            <span className="text-[14px] font-semibold">{t.upcoming}</span>
+            <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold min-w-[20px] text-center ${
+              activeTab === 'upcoming' ? 'bg-black/20 text-white' : 'bg-white/5 text-[var(--success)]'
+            }`}>
+              {upcomingTasks.length}
+            </span>
+          </button>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-safe-24 space-y-4 custom-scrollbar mask-linear-gradient">
+      {/* LIST */}
+      <div className="flex-1 overflow-y-auto px-4 pt-2 pb-safe-24 space-y-4 custom-scrollbar mask-linear-gradient">
         {displayedTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full pb-32 opacity-30">
              <Check size={56} className="mb-4 text-[var(--primary)]" />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
-  RefreshCw, History, Loader2, Hash, Users, Bug, Check, CheckSquare, 
+  RefreshCw, History, Loader2, Hash, Users, Bug, Check, CheckSquare, // <-- Добавлен CheckSquare
   BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, Copy, Download, Upload
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -20,6 +20,9 @@ const Toggle = ({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   </button>
 );
 
+// ==========================================
+// 1. SETTINGS ROW (С фиксом длинных email)
+// ==========================================
 const SettingsRow = ({ label, icon, bgColor, children }: { label: string; icon: React.ReactNode; bgColor: string; children: React.ReactNode }) => (
   <div className="flex items-center justify-between py-3 border-b border-white/10 last:border-0 min-h-[44px]">
     <div className="flex items-center gap-3 shrink-0 mr-4">
@@ -28,7 +31,7 @@ const SettingsRow = ({ label, icon, bgColor, children }: { label: string; icon: 
       </div>
       <span className="text-[17px] tracking-tight whitespace-nowrap">{label}</span>
     </div>
-    <div className="flex-1 flex justify-end min-w-0">
+    <div className="flex-1 flex justify-end min-w-0"> {/* min-w-0 позволяет детям сжиматься */}
       {children}
     </div>
   </div>
@@ -78,14 +81,8 @@ export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isS
 }
 
 // ==========================================
-// 3. SETTINGS MODAL
+// 3. SETTINGS MODAL (Новая структура и инверсия перевода)
 // ==========================================
-interface SettingsModalProps {
-  open: boolean; onClose: () => void; settings: AppSettings; onSave: (s: AppSettings) => void;
-  onOpenSyncModal: () => void; showDebug: boolean; setShowDebug: (show: boolean) => void;
-  appLang: 'ru' | 'en' | 'de'; setAppLang: (lang: 'ru' | 'en' | 'de') => void; skipTranslation: boolean; setSkipTranslation: (skip: boolean) => void; t: Dictionary;
-}
-
 export const SettingsModal = ({ 
   open, onClose, settings, onSave, onOpenSyncModal, showDebug, setShowDebug,
   appLang, setAppLang, skipTranslation, setSkipTranslation, t
@@ -150,6 +147,7 @@ export const SettingsModal = ({
               ))}
             </div>
           </SettingsRow>
+          {/* ИНВЕРСИЯ ЛОГИКИ: Если checked, то мы переводим (skipTranslation = false) */}
           <SettingsRow label={t.translateToGerman} icon={<ArrowRight />} bgColor="bg-[#5856D6]">
             <Toggle checked={!skipTranslation} onChange={(v) => { setSkipTranslation(!v); localStorage.setItem('skipTrans', String(!v)); }} />
           </SettingsRow>
@@ -180,6 +178,7 @@ export const SettingsModal = ({
           </div>
         </div>
 
+        {/* НОВАЯ СЕКЦИЯ: АДРЕСА (Синхронизация + Бэкап) */}
         <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">{t.addressesSection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden flex flex-col">
           <button onClick={() => { onClose(); onOpenSyncModal(); }} className="flex items-center gap-3 py-3 border-b border-white/10 text-[var(--primary)] active:opacity-50 transition-opacity">
@@ -355,7 +354,7 @@ export const PlacesDatabaseModal = ({
 };
 
 // ==========================================
-// 5. REVIEW SCREEN 
+// 5. REVIEW SCREEN (ART DIRECTOR APPROVED)
 // ==========================================
 export const InputRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="flex items-center justify-between px-4 py-4 border-b border-white/10 last:border-0 min-h-[56px]">
@@ -480,7 +479,7 @@ export const ReviewScreen = ({
 );
 
 // ==========================================
-// 8. TASKS LIST MODAL
+// 8. TASKS LIST MODAL (Типографические табы)
 // ==========================================
 export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule, t }: { 
   open: boolean; onClose: () => void; tasks: ParsedEvent[]; onMarkDone: (id: number) => void; onReschedule: (task: ParsedEvent) => void; t: Dictionary;
@@ -497,6 +496,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
 
   return (
     <div className="fixed inset-0 z-[400] bg-[var(--bg-main)] flex flex-col pt-safe">
+      {/* HEADER: Заменили History на CheckSquare */}
       <div className="flex items-center justify-between px-4 h-14 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0">
         <button onClick={onClose} className="text-[var(--primary)] text-[17px] font-medium">{t.cancel}</button>
         <h2 className="text-[17px] font-semibold flex items-center gap-2">
@@ -505,6 +505,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
         <div className="w-[60px]" /> 
       </div>
 
+      {/* TABS: Чистая типографика, никаких плашек */}
       <div className="flex px-6 pt-2 pb-0 shrink-0 border-b border-white/10">
         <button 
           onClick={() => { setActiveTab('overdue'); setExpandedId(null); }}
@@ -524,6 +525,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
         </button>
       </div>
 
+      {/* LIST */}
       <div className="flex-1 overflow-y-auto px-4 pt-4 pb-safe-24 space-y-4 custom-scrollbar mask-linear-gradient">
         {displayedTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full pb-32 opacity-30">
@@ -562,7 +564,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
                       className="px-5 py-2.5 text-[var(--success)] text-[15px] font-bold rounded-xl active:opacity-50 transition-opacity"
                       style={{ backgroundColor: 'rgba(var(--success-rgb), 0.15)' }}
                     >
-                      {t.done}
+                      {t.done} {/* Теперь здесь написано "Выполнено" */}
                     </button>
                   </div>
                 </div>
