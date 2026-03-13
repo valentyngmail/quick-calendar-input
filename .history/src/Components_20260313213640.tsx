@@ -365,25 +365,10 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
   );
 
   const handleDelete = (id: string) => {
-    // Находим адрес перед удалением, чтобы можно было его вернуть
-    const placeToDelete = places.find(p => p.id === id);
-    if (!placeToDelete) return;
-
     const updated = places.filter(p => p.id !== id);
     setPlaces(updated);
     localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(updated));
-    
-    // Показываем тост с кнопкой "Отмена" (Undo)
-    toast.success(t.deleted, {
-      action: {
-        label: 'Undo', // Всплывет кнопка возврата
-        onClick: () => {
-          const restored = [...updated, placeToDelete].sort((a, b) => a.title.localeCompare(b.title));
-          setPlaces(restored);
-          localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(restored));
-        }
-      }
-    });
+    toast.success(t.deleted);
   };
 
   const startEdit = (place: FavoritePlace) => {
