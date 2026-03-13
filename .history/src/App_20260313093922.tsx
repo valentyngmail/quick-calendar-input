@@ -207,8 +207,7 @@ const VoiceCalendarApp = () => {
       
       setFieldErrors({});
       setPhase('validation');
-    } catch (e: unknown) {
-      const error = e as Error;
+    } catch (error: any) {
       setErrorMessage(`Error: ${error.message}`);
       setPhase('error');
     }
