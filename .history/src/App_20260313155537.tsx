@@ -162,8 +162,18 @@ const VoiceCalendarApp = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ transcript: text, securityKey: settings.securityKey, currentDate: new Date().toISOString().split('T')[0], interfaceLang: appLang, skipTranslation }),
       });
-      addLog(`📥 [DECODE] Response status: ${res.status}`);
-      if (!res.ok) throw new Error(`Server Error: ${res.status}`);
+      addLog(`📥 [SAVE] Получен ответ от календаря. Статус: ${res.status}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      // Если включен режим задачи, сохраняем её в локальный список "Хвостов"
+      if (parsedEvent.isTask) {
+        const updatedTasks = [parsedEvent, ...pendingTasks];
+        setPendingTasks(updatedTasks);
+        localStorage.setItem('pendingTasks', JSON.stringify(updatedTasks));
+        addLog(`📌 [TASK] Задача добавлена в список контроля.`);
+      }
+
+      const newHistory = [parsedEvent, ...history].slice(0, 10);
       
       const rawText = await res.text();
       addLog(`📝 [DECODE] Raw JSON: ${rawText}`);
@@ -236,14 +246,6 @@ const VoiceCalendarApp = () => {
         throw new Error(`Failed to save: ${res.status}`);
       }
       
-      // Если включен режим задачи, сохраняем её в локальный список "Хвостов"
-      if (parsedEvent.isTask) {
-        const updatedTasks = [parsedEvent, ...pendingTasks];
-        setPendingTasks(updatedTasks);
-        localStorage.setItem('pendingTasks', JSON.stringify(updatedTasks));
-        addLog(`📌 [TASK] Задача добавлена в список контроля.`);
-      }
-      
       const updatedHistory = [parsedEvent, ...history].slice(0, 10);
       setHistory(updatedHistory);
       localStorage.setItem('calendarHistory', JSON.stringify(updatedHistory));
@@ -259,7 +261,9 @@ const VoiceCalendarApp = () => {
 
   const handleDuplicate = (oldEvent: ParsedEvent) => {
     setParsedEvent({ ...oldEvent, id: Date.now(), description: oldEvent.description || '' });
+    setFieldErrors({});
     setPhase('validation');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleMarkDone = (taskId: number) => {

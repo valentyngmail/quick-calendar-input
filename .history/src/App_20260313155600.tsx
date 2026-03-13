@@ -236,14 +236,6 @@ const VoiceCalendarApp = () => {
         throw new Error(`Failed to save: ${res.status}`);
       }
       
-      // Если включен режим задачи, сохраняем её в локальный список "Хвостов"
-      if (parsedEvent.isTask) {
-        const updatedTasks = [parsedEvent, ...pendingTasks];
-        setPendingTasks(updatedTasks);
-        localStorage.setItem('pendingTasks', JSON.stringify(updatedTasks));
-        addLog(`📌 [TASK] Задача добавлена в список контроля.`);
-      }
-      
       const updatedHistory = [parsedEvent, ...history].slice(0, 10);
       setHistory(updatedHistory);
       localStorage.setItem('calendarHistory', JSON.stringify(updatedHistory));
@@ -259,7 +251,9 @@ const VoiceCalendarApp = () => {
 
   const handleDuplicate = (oldEvent: ParsedEvent) => {
     setParsedEvent({ ...oldEvent, id: Date.now(), description: oldEvent.description || '' });
+    setFieldErrors({});
     setPhase('validation');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleMarkDone = (taskId: number) => {

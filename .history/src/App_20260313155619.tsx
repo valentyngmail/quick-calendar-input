@@ -259,7 +259,9 @@ const VoiceCalendarApp = () => {
 
   const handleDuplicate = (oldEvent: ParsedEvent) => {
     setParsedEvent({ ...oldEvent, id: Date.now(), description: oldEvent.description || '' });
+    setFieldErrors({});
     setPhase('validation');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleMarkDone = (taskId: number) => {

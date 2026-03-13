@@ -503,15 +503,7 @@ export const ReviewScreen = ({
 // ==========================================
 // 6. TASKS LIST MODAL (ХВОСТЫ)
 // ==========================================
-interface TasksListModalProps {
-  open: boolean;
-  onClose: () => void;
-  tasks: ParsedEvent[];
-  onMarkDone: (taskId: number) => void;
-  t: Dictionary;
-}
-
-export const TasksListModal = ({ open, onClose, tasks, onMarkDone, t }: TasksListModalProps) => {
+export const TasksListModal = ({ open, onClose, tasks, onMarkDone, t }: any) => {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[300] bg-black flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
@@ -524,7 +516,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, t }: TasksLis
         {tasks.length === 0 ? (
           <div className="text-center py-20 text-white/20 font-medium">Все хвосты подчищены! 🎉</div>
         ) : (
-          tasks.map((task) => (
+          tasks.map((task: any) => (
             <div key={task.id} className="bg-[#1C1C1E] border-l-4 border-l-red-500 rounded-2xl p-4 flex justify-between items-center shadow-lg">
               <div className="min-w-0 flex-1 mr-4">
                 <h3 className="font-bold text-white truncate text-[16px]">{task.title}</h3>
