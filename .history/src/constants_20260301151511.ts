@@ -20,7 +20,7 @@ export const QUICK_CHIPS = [
   { label: '10:00 AM', value: '10:00 AM' },
 ];
 
-export const DICT: Record<string, Record<string, string>> = {
+export const DICT: Record<string, any> = {
   ru: {
     subtitle: "Печатай, говори или диктуй",
     process: "Обработать", recording: "Идет запись...", reviewTitle: "Проверка и ред.",

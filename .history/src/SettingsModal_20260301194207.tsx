@@ -4,7 +4,20 @@ import { toast } from 'sonner';
 import { AppSettings } from './types';
 
 // Описываем структуру словаря. Заменяем any на string.
-type Dictionary = Record<string, string>;
+interface Dictionary {
+  settingsTitle: string;
+  langSection: string;
+  interfaceLang: string;
+  skipTrans: string;
+  identitySection: string;
+  webhooksSection: string;
+  syncHistory: string;
+  prefsSection: string;
+  saveSettings: string;
+  showDebug?: string;
+  // Используем string, так как все значения в словаре — это тексты
+  [key: string]: string | undefined; 
+}
 
 interface SettingsModalProps {
   open: boolean;
