@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Square, Check, X, Copy, Calendar, MapPin, Clock, Type, Timer, RotateCcw, Send, Trash2, Bug, CheckCircle2, AlertTriangle, Loader2, Users, Zap, FileText, Settings, BookOpen } from 'lucide-react';
+import { Settings, Loader2, CheckCircle2, AlertTriangle, RotateCcw, Bug, Copy, BookOpen } from 'lucide-react';
 import { toast } from 'sonner';
 
-// Импортируем наши модули
+// ПРАВИЛЬНЫЕ ИМПОРТЫ ИЗ НАШИХ НОВЫХ ФАЙЛОВ
 import { AppPhase, ParsedEvent, AppSettings, FavoritePlace, DICT, FAV_PLACES_KEY, loadSettings, saveSettings } from './Core';
 import { SettingsModal, SyncModal, PlacesDatabaseModal, ReviewScreen } from './Components';
 
@@ -25,14 +25,14 @@ const VoiceCalendarApp = () => {
   const [appLang, setAppLang] = useState<'ru'|'en'|'de'>(() => (localStorage.getItem('appLang') as 'ru'|'en'|'de') || 'ru');
   const [skipTranslation, setSkipTranslation] = useState(() => localStorage.getItem('skipTrans') === 'true');
   
-  // АВТО-МИГРАЦИЯ АДРЕСОВ ИЗ СТАРОЙ ВЕРСИИ
+  // 🚀 МАГИЯ АВТО-МИГРАЦИИ АДРЕСОВ ИЗ СТАРОЙ ВЕРСИИ
   const [favoritePlaces, setFavoritePlaces] = useState<FavoritePlace[]>(() => {
     let places = JSON.parse(localStorage.getItem(FAV_PLACES_KEY) || '[]');
     if (places.length === 0) {
       const oldPlaces = localStorage.getItem('calendarFavoritePlacesV3');
       if (oldPlaces && oldPlaces !== '[]') {
         places = JSON.parse(oldPlaces);
-        localStorage.setItem(FAV_PLACES_KEY, oldPlaces);
+        localStorage.setItem(FAV_PLACES_KEY, oldPlaces); // Сохраняем в новый формат
       }
     }
     return places;
@@ -254,23 +254,6 @@ const VoiceCalendarApp = () => {
             <button onClick={() => setPhase('idle')} className="w-full py-3 bg-white/10 rounded-xl flex items-center justify-center gap-2"><RotateCcw size={16}/> Retry</button>
           </div>
         )}
-
-        {/* FULLSCREEN DEBUG CONSOLE */}
-        {showDebug && (phase === 'idle' || phase === 'error') && (
-          <div className="fixed inset-0 z-[400] bg-black flex flex-col p-6 pt-16">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-[#34C759] font-bold text-xl flex items-center gap-2"><Bug /> System Logs</h3>
-              <button onClick={() => setShowDebug(false)} className="p-3 bg-[#1C1C1E] rounded-full text-white active:scale-95"><X size={24}/></button>
-            </div>
-            <div className="flex-1 overflow-y-auto space-y-3 mb-6 font-mono text-xs text-[#34C759] bg-[#1C1C1E] p-4 rounded-xl">
-              {debugLogs.length === 0 ? <span className="opacity-50">No logs yet...</span> : debugLogs.map((log, i) => <p key={i} className="break-all border-b border-[#34C759]/20 pb-2">{log}</p>)}
-            </div>
-            <div className="flex gap-4 pb-8">
-              <button onClick={() => { navigator.clipboard.writeText(debugLogs.join('\n')); toast.success('Copied!'); }} className="flex-[2] py-4 bg-[#34C759] text-black rounded-xl font-bold text-lg active:scale-95 transition-transform">Copy Logs</button>
-              <button onClick={() => setDebugLogs([])} className="flex-1 py-4 bg-[#1C1C1E] text-white rounded-xl font-bold text-lg active:scale-95 transition-transform">Clear</button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Review Screen */}
@@ -296,6 +279,23 @@ const VoiceCalendarApp = () => {
               ))}
             </div>
             <button onClick={handleProcessText} className="h-11 px-8 bg-[#34C759] text-black rounded-[22px] font-bold active:scale-95 transition-all">Create</button>
+          </div>
+        </div>
+      )}
+
+      {/* FULLSCREEN DEBUG CONSOLE */}
+      {showDebug && (
+        <div className="fixed inset-0 z-[400] bg-black flex flex-col p-6 pt-16">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-[#34C759] font-bold text-xl flex items-center gap-2"><Bug /> System Logs</h3>
+            <button onClick={() => setShowDebug(false)} className="p-3 bg-[#1C1C1E] rounded-full text-white active:scale-95"><X size={24}/></button>
+          </div>
+          <div className="flex-1 overflow-y-auto space-y-3 mb-6 font-mono text-xs text-[#34C759] bg-[#1C1C1E] p-4 rounded-xl">
+            {debugLogs.length === 0 ? <span className="opacity-50">No logs yet...</span> : debugLogs.map((log, i) => <p key={i} className="break-all border-b border-[#34C759]/20 pb-2">{log}</p>)}
+          </div>
+          <div className="flex gap-4 pb-8">
+            <button onClick={() => { navigator.clipboard.writeText(debugLogs.join('\n')); toast.success('Copied!'); }} className="flex-[2] py-4 bg-[#34C759] text-black rounded-xl font-bold text-lg active:scale-95 transition-transform">Copy Logs</button>
+            <button onClick={() => setDebugLogs([])} className="flex-1 py-4 bg-[#1C1C1E] text-white rounded-xl font-bold text-lg active:scale-95 transition-transform">Clear</button>
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
   RefreshCw, History, Loader2, Hash, Users, Bug, Check, 
-  BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, Copy
+  BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -157,12 +157,17 @@ export const SettingsModal = ({
 
         <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">Security & Debug</p>
         <div className="bg-[#1C1C1E] rounded-xl px-4 overflow-hidden">
+          
+          <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">Security & Debug</p>
+        <div className="bg-[#1C1C1E] rounded-xl px-4 overflow-hidden">
+          
+          {/* КНОПКА ИМПОРТА */}
           <SettingsRow label="Import Old Database" icon={<BookOpen />} bgColor="bg-[#34C759]">
             <button 
               onClick={() => {
                 const data = prompt('Вставьте сюда скопированный текст из старого приложения:');
                 if (data && data.length > 10) {
-                  localStorage.setItem(FAV_PLACES_KEY, data);
+                  localStorage.setItem('voicecal_favorite_places', data);
                   alert('База успешно импортирована! Перезагрузите приложение (закройте и откройте заново).');
                 }
               }} 
@@ -171,6 +176,12 @@ export const SettingsModal = ({
               Import
             </button>
           </SettingsRow>
+          {/* КОНЕЦ ВРЕМЕННОЙ КНОПКИ */}
+
+          <SettingsRow label="Security Key" icon={<Lock />} bgColor="bg-[#8E8E93]">
+            <input type="password" value={local.securityKey} onChange={e => setLocal({...local, securityKey: e.target.value})} className="bg-transparent text-right outline-none text-white/60 w-full" />
+          </SettingsRow>
+
           <SettingsRow label="Security Key" icon={<Lock />} bgColor="bg-[#8E8E93]">
             <input type="password" value={local.securityKey} onChange={e => setLocal({...local, securityKey: e.target.value})} className="bg-transparent text-right outline-none text-white/60 w-full" />
           </SettingsRow>
@@ -239,25 +250,7 @@ export const PlacesDatabaseModal = ({
       <div className="bg-[#1C1C1E] border border-white/10 rounded-2xl w-full max-w-lg h-[80vh] flex flex-col overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between p-4 border-b border-white/10 bg-black/40">
           <h2 className="text-[17px] font-bold text-white flex items-center gap-2"><BookOpen className="w-5 h-5 text-[#34C759]" /> {onSelect ? t.selectAddress : t.dbTitle}</h2>
-          <div className="flex items-center gap-1">
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                const data = localStorage.getItem(FAV_PLACES_KEY);
-                if (data && data !== '[]') {
-                  navigator.clipboard.writeText(data);
-                  toast.success('Database copied to clipboard!');
-                } else {
-                  toast.error('Database is empty!');
-                }
-              }} 
-              className="p-2 text-[#34C759] hover:bg-[#34C759]/20 rounded-xl transition-colors"
-              title="Export Database"
-            >
-              <Copy className="w-5 h-5" />
-            </button>
-            <button onClick={onClose} className="p-2 text-white/60 hover:text-white transition-colors rounded-xl"><X className="w-5 h-5" /></button>
-          </div>
+          <button onClick={onClose} className="p-2 text-white/60 hover:text-white transition-colors"><X className="w-5 h-5" /></button>
         </div>
         
         <div className="p-4 border-b border-white/10 bg-black/20">
