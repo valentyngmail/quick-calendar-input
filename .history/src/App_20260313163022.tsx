@@ -5,86 +5,6 @@ import { toast } from 'sonner';
 import { AppPhase, ParsedEvent, AppSettings, FavoritePlace, DICT, FAV_PLACES_KEY, loadSettings, saveSettings } from './Core';
 import { SettingsModal, SyncModal, PlacesDatabaseModal, ReviewScreen, TasksListModal } from './Components';
 
-// --- КОМПОНЕНТ СВАЙПА ДЛЯ ИСТОРИИ ---
-interface SwipeableHistoryItemProps {
-  item: ParsedEvent;
-  onDuplicate: (item: ParsedEvent) => void;
-  onDelete: (id: number) => void;
-  formatHistoryDate: (date: string, time: string) => string;
-}
-
-const SwipeableHistoryItem = ({ item, onDuplicate, onDelete, formatHistoryDate }: SwipeableHistoryItemProps) => {
-  const [offsetY, setOffsetY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const startY = useRef(0);
-  const startX = useRef(0);
-  const isVerticalSwipe = useRef(false);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    startY.current = e.touches[0].clientY;
-    startX.current = e.touches[0].clientX;
-    setIsDragging(true);
-    isVerticalSwipe.current = false;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    const currentY = e.touches[0].clientY;
-    const currentX = e.touches[0].clientX;
-    const deltaY = currentY - startY.current;
-    const deltaX = currentX - startX.current;
-
-    // Если палец идет вбок - это обычная прокрутка ленты, игнорируем
-    if (!isVerticalSwipe.current && Math.abs(deltaX) > Math.abs(deltaY)) {
-      setIsDragging(false);
-      return;
-    }
-
-    isVerticalSwipe.current = true;
-    setOffsetY(deltaY);
-  };
-
-  const handleTouchEnd = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    
-    // Если смахнули больше чем на 60 пикселей вверх или вниз - удаляем
-    if (Math.abs(offsetY) > 60) {
-      onDelete(item.id);
-    } else {
-      setOffsetY(0); // Иначе возвращаем на место
-    }
-  };
-
-  return (
-    <div
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onClick={(e) => {
-        e.stopPropagation();
-        // Кликаем только если это не был свайп
-        if (Math.abs(offsetY) < 10 && !isVerticalSwipe.current) onDuplicate(item);
-      }}
-      className="bg-white/10 backdrop-blur-xl border border-white/5 border-t-white/10 rounded-[20px] py-3 px-4 flex items-center gap-4 shrink-0 max-w-[240px] cursor-pointer"
-      style={{
-        transform: `translateY(${offsetY}px) scale(${isDragging ? 1.02 : 1})`,
-        opacity: 1 - Math.abs(offsetY) / 100, // Плавно растворяется при оттягивании
-        transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s',
-        touchAction: 'pan-x' // Магия CSS: разрешаем горизонтальный скролл, но перехватываем вертикальный
-      }}
-    >
-      <div className="flex flex-col gap-0.5 min-w-0 pointer-events-none">
-        <div className="text-[15px] font-medium text-white truncate max-w-[130px]">{item.title}</div>
-        <div className="text-[12px] text-white/60">{formatHistoryDate(item.date, item.time)}</div>
-      </div>
-      <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/80 shrink-0 pointer-events-none">
-        <RefreshCw size={14} strokeWidth={2.5} />
-      </div>
-    </div>
-  );
-};
-
 const VoiceCalendarApp = () => {
   // --- State ---
   const [phase, setPhase] = useState<AppPhase>('idle');
@@ -446,13 +366,6 @@ const VoiceCalendarApp = () => {
     setPhase('validation');
   };
 
-  const handleDeleteHistory = (id: number) => {
-    const updated = history.filter(item => item.id !== id);
-    setHistory(updated);
-    localStorage.setItem('calendarHistory', JSON.stringify(updated));
-    toast.success(appLang === 'ru' ? 'Удалено' : 'Deleted');
-  };
-
   const handleMarkDone = (taskId: number) => {
     const updated = pendingTasks.filter(t => t.id !== taskId);
     setPendingTasks(updated);
@@ -530,13 +443,19 @@ const VoiceCalendarApp = () => {
         {phase === 'idle' && history.length > 0 && (
           <div className={`shrink-0 overflow-x-auto flex gap-3 px-6 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-all duration-300 ${isKbOpen ? 'opacity-0 max-h-0 pointer-events-none' : 'opacity-100 max-h-[100px]'}`}>
             {history.map((item, i) => (
-              <SwipeableHistoryItem 
+              <div 
                 key={`${item.id}-${i}`} 
-                item={item} 
-                onDuplicate={handleDuplicate} 
-                onDelete={handleDeleteHistory}
-                formatHistoryDate={formatHistoryDate}
-              />
+                onClick={(e) => { e.stopPropagation(); handleDuplicate(item); }}
+                className="bg-white/10 backdrop-blur-xl border border-white/5 border-t-white/10 rounded-[20px] py-3 px-4 flex items-center gap-4 shrink-0 max-w-[240px] cursor-pointer active:scale-95 transition-transform"
+              >
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <div className="text-[15px] font-medium text-white truncate max-w-[130px]">{item.title}</div>
+                  <div className="text-[12px] text-white/60">{formatHistoryDate(item.date, item.time)}</div>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/80 shrink-0">
+                  <RefreshCw size={14} strokeWidth={2.5} />
+                </div>
+              </div>
             ))}
           </div>
         )}
