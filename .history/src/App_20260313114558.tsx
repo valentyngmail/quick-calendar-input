@@ -19,9 +19,6 @@ const VoiceCalendarApp = () => {
   const [appLang, setAppLang] = useState<'ru'|'en'|'de'>(() => (localStorage.getItem('appLang') as 'ru'|'en'|'de') || 'ru');
   const [skipTranslation, setSkipTranslation] = useState(() => localStorage.getItem('skipTrans') === 'true');
   
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncProgress, setSyncProgress] = useState('');
-
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dockRef = useRef<HTMLDivElement>(null);
   const t = DICT[appLang] || DICT['ru']; 
@@ -163,24 +160,9 @@ const VoiceCalendarApp = () => {
       )}
 
       {/* 5. Settings Modal */}
-      {/* 5. Settings Modal */}
       <SettingsModal 
-        open={showSettings} 
-        onClose={() => setShowSettings(false)} 
-        settings={settings} 
-        onSave={(s: AppSettings) => { setSettings(s); saveSettings(s); }} 
-        // ВОТ ЭТИ ТРИ СТРОКИ НУЖНО ДОБАВИТЬ:
-        onSync={handleSyncLocations}
-        isSyncing={isSyncing}
-        syncProgress={syncProgress}
-        // ОСТАЛЬНОЕ ОСТАЕТСЯ:
-        showDebug={false}
-        setShowDebug={() => {}}
-        appLang={appLang} 
-        setAppLang={setAppLang} 
-        skipTranslation={skipTranslation} 
-        setSkipTranslation={setSkipTranslation} 
-        t={t}
+        open={showSettings} onClose={() => setShowSettings(false)} settings={settings} onSave={(s: any) => {setSettings(s); saveSettings(s);}} 
+        appLang={appLang} setAppLang={setAppLang} skipTranslation={skipTranslation} setSkipTranslation={setSkipTranslation} t={t}
       />
     </div>
   );

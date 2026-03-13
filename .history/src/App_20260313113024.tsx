@@ -19,9 +19,6 @@ const VoiceCalendarApp = () => {
   const [appLang, setAppLang] = useState<'ru'|'en'|'de'>(() => (localStorage.getItem('appLang') as 'ru'|'en'|'de') || 'ru');
   const [skipTranslation, setSkipTranslation] = useState(() => localStorage.getItem('skipTrans') === 'true');
   
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncProgress, setSyncProgress] = useState('');
-
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dockRef = useRef<HTMLDivElement>(null);
   const t = DICT[appLang] || DICT['ru']; 
@@ -75,31 +72,6 @@ const VoiceCalendarApp = () => {
       setPhase('success');
       setTimeout(() => setPhase('idle'), 2000);
     } catch (e) { setErrorMessage("Save failed"); setPhase('error'); }
-  };
-
-  const handleSyncLocations = async (webhookUrl: string) => {
-    const cleanUrl = webhookUrl?.trim();
-    if (!cleanUrl) { 
-      toast.error("Fetch Webhook not configured"); 
-      return; 
-    }
-    setIsSyncing(true);
-    setSyncProgress("Connecting...");
-    try {
-      const res = await fetch(cleanUrl);
-      if (!res.ok) throw new Error("Sync failed");
-      const data = await res.json();
-      // Если сервер прислал массив мест, сохраняем их
-      if (Array.isArray(data)) {
-        localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(data));
-        toast.success(`Synced ${data.length} locations`);
-      }
-    } catch (e) {
-      toast.error("Sync error");
-    } finally {
-      setIsSyncing(false);
-      setSyncProgress("");
-    }
   };
 
   return (
@@ -163,24 +135,9 @@ const VoiceCalendarApp = () => {
       )}
 
       {/* 5. Settings Modal */}
-      {/* 5. Settings Modal */}
       <SettingsModal 
-        open={showSettings} 
-        onClose={() => setShowSettings(false)} 
-        settings={settings} 
-        onSave={(s: AppSettings) => { setSettings(s); saveSettings(s); }} 
-        // ВОТ ЭТИ ТРИ СТРОКИ НУЖНО ДОБАВИТЬ:
-        onSync={handleSyncLocations}
-        isSyncing={isSyncing}
-        syncProgress={syncProgress}
-        // ОСТАЛЬНОЕ ОСТАЕТСЯ:
-        showDebug={false}
-        setShowDebug={() => {}}
-        appLang={appLang} 
-        setAppLang={setAppLang} 
-        skipTranslation={skipTranslation} 
-        setSkipTranslation={setSkipTranslation} 
-        t={t}
+        open={showSettings} onClose={() => setShowSettings(false)} settings={settings} onSave={(s: any) => {setSettings(s); saveSettings(s);}} 
+        appLang={appLang} setAppLang={setAppLang} skipTranslation={skipTranslation} setSkipTranslation={setSkipTranslation} t={t}
       />
     </div>
   );
