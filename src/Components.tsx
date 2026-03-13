@@ -131,8 +131,7 @@ export const SettingsModal = ({
   };
 
   return (
-    // Добавляем bg-black или var(--bg-main) и убеждаемся, что z-index выше, чем у хедера главного экрана
-    <div className="fixed inset-0 z-[500] bg-[#000000] flex flex-col overflow-hidden pt-safe">
+    <div className="fixed inset-0 z-[200] bg-[var(--bg-main)] flex flex-col overflow-hidden pt-safe">
       
       {/* HEADER */}
       <div className="flex items-center justify-between px-4 h-16 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0 z-20">
@@ -419,10 +418,10 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
   };
 
   return (
-    <div className="fixed inset-0 z-[500] bg-black flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[300] bg-[var(--bg-main)] flex flex-col pt-safe">
       
       {/* HEADER */}
-      <div className="flex items-center justify-between px-4 h-20 pt-safe bg-black sticky top-0 shrink-0 z-20 border-b border-white/5">
+      <div className="flex items-center justify-between px-4 h-16 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0 z-20">
         <button onClick={onClose} className="w-[80px] text-left text-[var(--primary)] text-[17px] font-medium active:opacity-50 transition-opacity">
           {t.cancel}
         </button>

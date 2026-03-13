@@ -449,8 +449,10 @@ const VoiceCalendarApp = () => {
     <div className="fixed inset-0 bg-[var(--bg-main)] text-white overflow-hidden flex flex-col">
       
       {/* 1. HEADER (Идеальный баланс) */}
-      <div className="absolute top-0 left-0 right-0 px-4 flex items-center justify-between z-50 h-header pt-safe">
       
+      {/* Добавь проверку: если открыты Настройки или База, скрываем хедер главного экрана */}
+      <div className={`absolute top-0 left-0 right-0 px-4 flex items-center justify-between z-50 h-header pt-safe transition-opacity duration-200 ${showSettings || showDatabase ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}></div>
+
         {/* Левая часть: Только оперативные Задачи */}
         <div className="flex-1 flex justify-start">
           <button onClick={() => setShowTasks(true)} className="p-2 rounded-xl active:bg-white/10 transition-colors relative" title="Pending Tasks">
