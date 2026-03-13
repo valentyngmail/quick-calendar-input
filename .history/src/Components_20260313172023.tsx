@@ -36,10 +36,10 @@ const SettingsRow = ({ label, icon, bgColor, children }: { label: string; icon: 
 // 2. SYNC MODAL
 // ==========================================
 interface SyncModalProps {
-  open: boolean; onClose: () => void; settings: AppSettings; onSaveSettings: (s: AppSettings) => void; onSync: (url: string) => void; isSyncing: boolean; syncProgress: string; t: Dictionary;
+  open: boolean; onClose: () => void; settings: AppSettings; onSaveSettings: (s: AppSettings) => void; onSync: (url: string) => void; isSyncing: boolean; syncProgress: string;
 }
 
-export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isSyncing, syncProgress, t }: SyncModalProps) => {
+export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isSyncing, syncProgress }: SyncModalProps) => {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[250] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">

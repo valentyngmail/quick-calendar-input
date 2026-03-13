@@ -36,10 +36,10 @@ const SettingsRow = ({ label, icon, bgColor, children }: { label: string; icon: 
 // 2. SYNC MODAL
 // ==========================================
 interface SyncModalProps {
-  open: boolean; onClose: () => void; settings: AppSettings; onSaveSettings: (s: AppSettings) => void; onSync: (url: string) => void; isSyncing: boolean; syncProgress: string; t: Dictionary;
+  open: boolean; onClose: () => void; settings: AppSettings; onSaveSettings: (s: AppSettings) => void; onSync: (url: string) => void; isSyncing: boolean; syncProgress: string;
 }
 
-export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isSyncing, syncProgress, t }: SyncModalProps) => {
+export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isSyncing, syncProgress }: SyncModalProps) => {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[250] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
@@ -94,11 +94,11 @@ export const SettingsModal = ({
   useEffect(() => { if (open) setLocal({ ...settings }); }, [open, settings]);
   if (!open) return null;
 
-  const handleSave = () => { onSave(local); toast.success(t.settingsSaved); onClose(); };
+  const handleSave = () => { onSave(local); toast.success('Settings saved'); onClose(); };
 
   const exportBackup = () => {
     const data = localStorage.getItem(FAV_PLACES_KEY);
-    if (!data || data === '[]') return toast.error(t.dbEmpty);
+    if (!data || data === '[]') return toast.error('Database is empty!');
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -108,7 +108,7 @@ export const SettingsModal = ({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast.success(t.backupCreated);
+    toast.success('Backup file created!');
   };
 
   const importBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,16 +120,16 @@ export const SettingsModal = ({
         const json = JSON.parse(event.target?.result as string);
         if (Array.isArray(json)) {
           localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(json));
-          toast.success(t.backupRestored);
+          toast.success('Backup successfully restored!');
           setTimeout(() => window.location.reload(), 1500); 
         } else throw new Error('Invalid format');
-      } catch (err) { toast.error(t.backupError); }
+      } catch (err) { toast.error('Failed to read backup file.'); }
     };
     reader.readAsText(file);
   };
 
   return (
-    <div className="fixed inset-0 z-[200] bg-black flex flex-col overflow-hidden pt-safe">
+    <div className="fixed inset-0 z-[200] bg-black flex flex-col overflow-hidden" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 shrink-0">
         <button onClick={onClose} className="text-[#34C759] text-[17px]">{t.cancel || 'Cancel'}</button>
         <h2 className="text-[17px] font-semibold">{t.settingsTitle}</h2>
@@ -207,7 +207,7 @@ export const SettingsModal = ({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent pb-safe-16">
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent pb-[calc(env(safe-area-inset-bottom)+16px)]">
         <button onClick={handleSave} className="w-full h-14 bg-[#34C759] text-black font-bold rounded-2xl shadow-xl active:scale-95 transition-transform">{t.saveSettings}</button>
       </div>
     </div>
@@ -237,7 +237,7 @@ export const PlacesDatabaseModal = ({
   );
 
   const handleDelete = (id: string) => {
-    if (window.confirm(t.confirmDelete)) {
+    if (window.confirm("Delete this address from database?")) {
       const updated = places.filter(p => p.id !== id);
       setPlaces(updated);
       localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(updated));
@@ -254,7 +254,7 @@ export const PlacesDatabaseModal = ({
     setPlaces(updated);
     localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(updated));
     setEditingId(null);
-    toast.success(t.placeUpdated);
+    toast.success("Place updated!");
   };
 
   const openGoogleMaps = (e: React.MouseEvent, location: string) => {
@@ -265,7 +265,7 @@ export const PlacesDatabaseModal = ({
   const borderColors = ['border-l-[#34C759]', 'border-l-[#0A84FF]', 'border-l-[#FF9500]', 'border-l-[#BF5AF2]', 'border-l-[#FF2D55]'];
 
   return (
-    <div className="fixed inset-0 z-[300] bg-black flex flex-col pt-safe">
+    <div className="fixed inset-0 z-[300] bg-black flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       
       {/* 1. HEADER (Идеально как в Настройках) */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
@@ -308,7 +308,7 @@ export const PlacesDatabaseModal = ({
       </div>
 
       {/* 3. CARDS LIST (Теперь на весь экран) */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 pb-safe-24 space-y-3 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+24px)] space-y-3 custom-scrollbar">
         {filteredPlaces.length === 0 ? (
            <div className="text-center py-20 text-white/20 font-medium">{t.noLocFound}</div>
         ) : (
@@ -389,7 +389,7 @@ export const ReviewScreen = ({
   parsedEvent, setParsedEvent, rawInputStore, t, onCancel, onSave, 
   onLocationChange, locationSuggestions, showLocationDropdown, onSelectLocation, onOpenDatabase
 }: ReviewScreenProps) => (
-  <div className="fixed inset-0 bg-black z-[150] flex flex-col pt-safe">
+  <div className="fixed inset-0 bg-black z-[150] flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
     <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
       <button onClick={onCancel} className="text-[#FF453A] text-[17px] font-medium">{t.cancel}</button>
       <h2 className="text-[17px] font-semibold">{t.checkDetails}</h2>
@@ -418,7 +418,8 @@ export const ReviewScreen = ({
           <select 
             value={parsedEvent.duration} 
             onChange={e => setParsedEvent({...parsedEvent, duration: e.target.value})} 
-            className="bg-transparent text-[#34C759] font-bold outline-none appearance-none cursor-pointer w-full text-right text-align-last-right"
+            className="bg-transparent text-[#34C759] font-bold outline-none appearance-none cursor-pointer w-full text-right"
+            style={{ textAlignLast: 'right' }}
           >
             <option value="15">15 min</option>
             <option value="30">30 min</option>
@@ -491,7 +492,7 @@ export const ReviewScreen = ({
       )}
     </div>
 
-    <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent pb-safe-16">
+    <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent pb-[calc(env(safe-area-inset-bottom)+16px)]">
       <button onClick={onSave} className="w-full h-14 bg-gradient-to-br from-[#34C759] to-[#28a745] text-black font-bold text-[17px] rounded-2xl shadow-lg active:scale-95 transition-transform">
         {t.saveToCalendar}
       </button>
@@ -527,7 +528,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
   const displayedTasks = activeTab === 'overdue' ? overdueTasks : upcomingTasks;
 
   return (
-    <div className="fixed inset-0 z-[300] bg-black flex flex-col pt-safe">
+    <div className="fixed inset-0 z-[300] bg-black flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
         <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel}</button>
         <h2 className="text-[17px] font-semibold">{t.tasksTitle}</h2>

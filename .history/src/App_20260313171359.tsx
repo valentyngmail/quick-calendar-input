@@ -640,7 +640,7 @@ const VoiceCalendarApp = () => {
 
       <SyncModal
         open={showSyncModal} onClose={() => setShowSyncModal(false)} settings={settings} onSaveSettings={(s: AppSettings) => { setSettings(s); saveSettings(s); }}
-        onSync={handleSyncLocations} isSyncing={isSyncing} syncProgress={syncProgress} t={t}
+        onSync={handleSyncLocations} isSyncing={isSyncing} syncProgress={syncProgress}
       />
 
       <PlacesDatabaseModal 
