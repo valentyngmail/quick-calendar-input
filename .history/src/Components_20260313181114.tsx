@@ -267,9 +267,9 @@ export const PlacesDatabaseModal = ({
       
       {/* 1. HEADER (Идеально как в Настройках) */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
-        <button onClick={onClose} className="text-[#5E5CE6] text-[17px] font-medium">{t.cancel}</button>
+        <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel}</button>
         <h2 className="text-[17px] font-semibold flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-[#5E5CE6]" /> {onSelect ? t.selectAddress : t.dbTitle}
+          <BookOpen className="w-5 h-5 text-[#34C759]" /> {onSelect ? t.selectAddress : t.dbTitle}
         </h2>
         <div className="w-[60px] flex justify-end">
           {!onSelect && (
@@ -279,10 +279,10 @@ export const PlacesDatabaseModal = ({
                 const data = localStorage.getItem(FAV_PLACES_KEY);
                 if (data && data !== '[]') {
                   navigator.clipboard.writeText(data);
-                  toast.success(t.copied);
+                  toast.success('Copied!');
                 }
               }} 
-              className="text-[#5E5CE6]"
+              className="text-[#34C759]"
             >
               <Copy className="w-5 h-5" />
             </button>
@@ -320,11 +320,11 @@ export const PlacesDatabaseModal = ({
             >
               {editingId === place.id ? (
                 <div className="space-y-3" onClick={e => e.stopPropagation()}>
-                  <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#5E5CE6] border border-transparent" />
-                  <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#5E5CE6] border border-transparent" />
+                  <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
+                  <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => setEditingId(null)} className="px-4 py-2 text-sm font-bold text-white/40">Cancel</button>
-                    <button onClick={() => saveEdit(place.id)} className="px-5 py-2 bg-[#5E5CE6] text-black rounded-lg font-bold">Save</button>
+                    <button onClick={() => saveEdit(place.id)} className="px-5 py-2 bg-[#34C759] text-black rounded-lg font-bold">Save</button>
                   </div>
                 </div>
               ) : (
@@ -527,9 +527,8 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
     <div className="fixed inset-0 z-[400] bg-black flex flex-col pt-safe">
       {/* 1. HEADER */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
-        <button onClick={onClose} className="text-[#5E5CE6] text-[17px] font-medium">{t.cancel}</button>
-        <h2 className="text-[17px] font-semibold flex items-center gap-2">
-          <History className="w-5 h-5 text-[#5E5CE6]" /> {t.tasksTitle}
+        <button onClick={onClose} className="text-[#5E5CE6] text-[17px] font-medium">{t.cancel}</button>        <h2 className="text-[17px] font-semibold flex items-center gap-2">
+          <h2 className="text-[17px] font-semibold">{t.tasksTitle}</h2>
         </h2>
         <div className="w-[60px]" /> 
       </div>
@@ -602,7 +601,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
 
                     <button 
                       onClick={(e) => { e.stopPropagation(); onMarkDone(task.id); }}
-                      className="px-4 py-1.5 bg-[#5E5CE6]/15 text-[#34C759] text-[14px] font-bold rounded-[8px] active:opacity-50 transition-opacity ml-1"
+                      className="px-4 py-1.5 bg-[#34C759]/15 text-[#34C759] text-[14px] font-bold rounded-[8px] active:opacity-50 transition-opacity ml-1"
                     >
                       {t.done}
                     </button>

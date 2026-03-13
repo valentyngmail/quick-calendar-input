@@ -56,20 +56,20 @@ export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isS
            type="url" placeholder="https://hook.make.com/..." 
            value={settings.fetchLocationsWebhook}
            onChange={e => onSaveSettings({...settings, fetchLocationsWebhook: e.target.value})}
-           className="bg-black border border-white/10 rounded-xl px-4 py-3 mb-6 w-full text-[#0A84FF] text-sm outline-none focus:border-[#5E5CE6]"
+           className="bg-black border border-white/10 rounded-xl px-4 py-3 mb-6 w-full text-[#0A84FF] text-sm outline-none focus:border-[#34C759]"
          />
          <div className="flex gap-3 mt-2">
            <button onClick={onClose} className="flex-1 py-3.5 bg-white/10 text-white rounded-xl font-bold active:scale-95 transition-transform">{t.cancel}</button>
            <button 
              onClick={() => onSync(settings.fetchLocationsWebhook)}
              disabled={isSyncing || !settings.fetchLocationsWebhook}
-             className="flex-1 py-3.5 bg-[#5E5CE6] text-white rounded-xl font-bold disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 transition-transform"
+             className="flex-1 py-3.5 bg-[#34C759] text-black rounded-xl font-bold disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 transition-transform"
            >
              {isSyncing && <Loader2 className="animate-spin" size={18}/>}
              {isSyncing ? t.syncing : t.startSync}
            </button>
          </div>
-         {syncProgress && <p className="text-center text-[#5E5CE6] text-xs mt-4 font-bold">{syncProgress}</p>}
+         {syncProgress && <p className="text-center text-[#34C759] text-xs mt-4 font-bold">{syncProgress}</p>}
       </div>
     </div>
   );
@@ -131,7 +131,7 @@ export const SettingsModal = ({
   return (
     <div className="fixed inset-0 z-[200] bg-black flex flex-col overflow-hidden pt-safe">
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 shrink-0">
-        <button onClick={onClose} className="text-[#5E5CE6] text-[17px]">{t.cancel || 'Cancel'}</button>
+        <button onClick={onClose} className="text-[#34C759] text-[17px]">{t.cancel || 'Cancel'}</button>
         <h2 className="text-[17px] font-semibold">{t.settingsTitle}</h2>
         <div className="w-[60px]" />
       </div>
@@ -176,8 +176,8 @@ export const SettingsModal = ({
              <div className="flex items-center gap-3 mb-1"><div className="w-7 h-7 rounded-md bg-[#8E8E93] flex items-center justify-center text-white"><LinkIcon size={16} /></div><span className="text-[17px]">{t.saveWebhook}</span></div>
              <input type="url" value={local.saveWebhook} onChange={e => setLocal({...local, saveWebhook: e.target.value})} className="bg-transparent outline-none text-[#0A84FF] text-[14px] font-mono w-full placeholder:text-[#0A84FF]/40" placeholder="https://hook.make.com/..." />
           </div>
-          <button onClick={() => { onClose(); onOpenSyncModal(); }} className="w-full flex items-center py-3 text-[#5E5CE6] gap-3">
-             <div className="w-7 h-7 rounded-md bg-[#5E5CE6] flex items-center justify-center text-white"><History size={16} /></div>
+          <button onClick={() => { onClose(); onOpenSyncModal(); }} className="w-full flex items-center py-3 text-[#34C759] gap-3">
+             <div className="w-7 h-7 rounded-md bg-[#34C759] flex items-center justify-center text-white"><History size={16} /></div>
              <span className="text-[17px] font-medium">{t.syncHistory}</span>
           </button>
         </div>
@@ -208,7 +208,7 @@ export const SettingsModal = ({
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent pb-safe-16">
-        <button onClick={handleSave} className="w-full h-14 bg-[#5E5CE6] text-white font-bold rounded-2xl shadow-xl active:scale-95 transition-transform">{t.saveSettings}</button>
+        <button onClick={handleSave} className="w-full h-14 bg-[#34C759] text-black font-bold rounded-2xl shadow-xl active:scale-95 transition-transform">{t.saveSettings}</button>
       </div>
     </div>
   );
@@ -267,9 +267,9 @@ export const PlacesDatabaseModal = ({
       
       {/* 1. HEADER (Идеально как в Настройках) */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
-        <button onClick={onClose} className="text-[#5E5CE6] text-[17px] font-medium">{t.cancel}</button>
+        <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel}</button>
         <h2 className="text-[17px] font-semibold flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-[#5E5CE6]" /> {onSelect ? t.selectAddress : t.dbTitle}
+          <BookOpen className="w-5 h-5 text-[#34C759]" /> {onSelect ? t.selectAddress : t.dbTitle}
         </h2>
         <div className="w-[60px] flex justify-end">
           {!onSelect && (
@@ -279,10 +279,10 @@ export const PlacesDatabaseModal = ({
                 const data = localStorage.getItem(FAV_PLACES_KEY);
                 if (data && data !== '[]') {
                   navigator.clipboard.writeText(data);
-                  toast.success(t.copied);
+                  toast.success('Copied!');
                 }
               }} 
-              className="text-[#5E5CE6]"
+              className="text-[#34C759]"
             >
               <Copy className="w-5 h-5" />
             </button>
@@ -320,11 +320,11 @@ export const PlacesDatabaseModal = ({
             >
               {editingId === place.id ? (
                 <div className="space-y-3" onClick={e => e.stopPropagation()}>
-                  <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#5E5CE6] border border-transparent" />
-                  <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#5E5CE6] border border-transparent" />
+                  <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
+                  <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => setEditingId(null)} className="px-4 py-2 text-sm font-bold text-white/40">Cancel</button>
-                    <button onClick={() => saveEdit(place.id)} className="px-5 py-2 bg-[#5E5CE6] text-black rounded-lg font-bold">Save</button>
+                    <button onClick={() => saveEdit(place.id)} className="px-5 py-2 bg-[#34C759] text-black rounded-lg font-bold">Save</button>
                   </div>
                 </div>
               ) : (
@@ -432,7 +432,7 @@ export const ReviewScreen = ({
             className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/10 text-[17px]" 
             placeholder="Address" 
           />
-          <button onClick={onOpenDatabase} className="ml-3 text-[#5E5CE6] active:opacity-50 transition-opacity">
+          <button onClick={onOpenDatabase} className="ml-3 text-[#34C759] active:opacity-50 transition-opacity">
             <BookOpen size={20} />
           </button>
         </InputRow>
@@ -441,7 +441,7 @@ export const ReviewScreen = ({
           <div className="absolute z-50 left-0 right-0 top-[56px] bg-[#2C2C2E] border border-white/10 rounded-b-xl shadow-2xl max-h-48 overflow-y-auto">
             {locationSuggestions.map((loc, i) => (
               <button key={i} onClick={() => onSelectLocation(loc)} className="w-full text-left px-4 py-3 text-sm text-white hover:bg-white/10 border-b border-white/5 last:border-0 truncate transition-colors">
-                <MapPin size={14} className="inline mr-2 text-[#5E5CE6]" /> {loc}
+                <MapPin size={14} className="inline mr-2 text-[#34C759]" /> {loc}
               </button>
             ))}
           </div>
@@ -486,8 +486,8 @@ export const ReviewScreen = ({
       )}
     </div>
 
-    <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent pb-safe-16 px-4">
-      <button onClick={onSave} className="w-full h-14 bg-[#5E5CE6] text-white font-bold text-[17px] rounded-2xl shadow-lg active:scale-95 transition-transform">
+    <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/90 to-transparent pb-safe-16">
+      <button onClick={onSave} className="w-full h-14 bg-gradient-to-br from-[#34C759] to-[#28a745] text-black font-bold text-[17px] rounded-2xl shadow-lg active:scale-95 transition-transform">
         {t.saveToCalendar}
       </button>
     </div>
@@ -527,9 +527,9 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
     <div className="fixed inset-0 z-[400] bg-black flex flex-col pt-safe">
       {/* 1. HEADER */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
-        <button onClick={onClose} className="text-[#5E5CE6] text-[17px] font-medium">{t.cancel}</button>
+        <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel}</button>
         <h2 className="text-[17px] font-semibold flex items-center gap-2">
-          <History className="w-5 h-5 text-[#5E5CE6]" /> {t.tasksTitle}
+          <History className="w-5 h-5 text-[#34C759]" /> {t.tasksTitle}
         </h2>
         <div className="w-[60px]" /> 
       </div>
@@ -602,7 +602,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
 
                     <button 
                       onClick={(e) => { e.stopPropagation(); onMarkDone(task.id); }}
-                      className="px-4 py-1.5 bg-[#5E5CE6]/15 text-[#34C759] text-[14px] font-bold rounded-[8px] active:opacity-50 transition-opacity ml-1"
+                      className="px-4 py-1.5 bg-[#34C759]/15 text-[#34C759] text-[14px] font-bold rounded-[8px] active:opacity-50 transition-opacity ml-1"
                     >
                       {t.done}
                     </button>

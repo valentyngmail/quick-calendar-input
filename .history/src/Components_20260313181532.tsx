@@ -320,11 +320,11 @@ export const PlacesDatabaseModal = ({
             >
               {editingId === place.id ? (
                 <div className="space-y-3" onClick={e => e.stopPropagation()}>
-                  <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#5E5CE6] border border-transparent" />
-                  <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#5E5CE6] border border-transparent" />
+                  <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
+                  <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => setEditingId(null)} className="px-4 py-2 text-sm font-bold text-white/40">Cancel</button>
-                    <button onClick={() => saveEdit(place.id)} className="px-5 py-2 bg-[#5E5CE6] text-black rounded-lg font-bold">Save</button>
+                    <button onClick={() => saveEdit(place.id)} className="px-5 py-2 bg-[#34C759] text-black rounded-lg font-bold">Save</button>
                   </div>
                 </div>
               ) : (
@@ -602,7 +602,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
 
                     <button 
                       onClick={(e) => { e.stopPropagation(); onMarkDone(task.id); }}
-                      className="px-4 py-1.5 bg-[#5E5CE6]/15 text-[#34C759] text-[14px] font-bold rounded-[8px] active:opacity-50 transition-opacity ml-1"
+                      className="px-4 py-1.5 bg-[#34C759]/15 text-[#34C759] text-[14px] font-bold rounded-[8px] active:opacity-50 transition-opacity ml-1"
                     >
                       {t.done}
                     </button>
