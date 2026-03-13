@@ -200,7 +200,7 @@ const VoiceCalendarApp = () => {
     setPhase('processing');
     addLog(`🚀 [DECODE] Sending: "${text}"`);
 
-    // Мнимый (Mock) режим
+    // Мнимый (Mock) режим, если токены кончились или в настройках 'test'
     if (settings.decodeWebhook === 'test') {
       addLog(`🧪 [MOCK] Включен тестовый режим без запроса к API`);
       setTimeout(() => {
@@ -213,10 +213,7 @@ const VoiceCalendarApp = () => {
           location: "Тестовая локация",
           guests: settings.defaultGuests,
           description: text + '\n\n--- Mock Mode ---',
-          isTask: text.toLowerCase().includes('задач') || text.toLowerCase().includes('task'),
-          // Добавляем недостающие обязательные поля:
-          guestsCanModify: true,
-          reminder: 15
+          isTask: text.toLowerCase().includes('задач') || text.toLowerCase().includes('task')
         };
         setParsedEvent(mockData);
         setPhase('validation');
@@ -271,18 +268,6 @@ const VoiceCalendarApp = () => {
   const handleConfirm = async () => {
     if (!parsedEvent) return;
     setPhase('saving');
-
-    if (settings.saveWebhook === 'test') {
-      addLog(`🧪 [MOCK] Имитация сохранения в календарь...`);
-      setTimeout(() => {
-        const updatedHistory = [parsedEvent, ...history].slice(0, 10);
-        setHistory(updatedHistory);
-        localStorage.setItem('calendarHistory', JSON.stringify(updatedHistory));
-        setPhase('success');
-        setTimeout(() => { setPhase('idle'); setTextInput(''); }, 2000);
-      }, 1500);
-      return;
-    }
 
     const loc = parsedEvent.location?.trim();
     if (loc && loc.length > 2) {
