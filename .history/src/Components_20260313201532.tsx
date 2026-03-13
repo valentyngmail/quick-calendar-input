@@ -496,7 +496,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
 
   return (
     <div className="fixed inset-0 z-[400] bg-[var(--bg-main)] flex flex-col pt-safe">
-      {/* HEADER */}
+      {/* HEADER: Чуть больше пространства */}
       <div className="flex items-center justify-between px-4 h-14 border-b border-white/5 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0">
         <button onClick={onClose} className="text-[var(--primary)] text-[17px] font-medium">{t.cancel}</button>
         <h2 className="text-[17px] font-semibold flex items-center gap-2">
@@ -505,7 +505,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
         <div className="w-[60px]" /> 
       </div>
 
-      {/* TABS */}
+      {/* TABS: Добавили отступы (py-5) чтобы оторвать от шапки */}
       <div className="px-4 py-5 shrink-0">
         <div className="flex items-center p-1 bg-[var(--bg-surface)] rounded-[11px] w-full shadow-inner">
           <button 
@@ -530,7 +530,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
           >
             <span className="text-[14px] font-semibold">{t.upcoming}</span>
             <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold min-w-[20px] text-center ${
-              activeTab === 'upcoming' ? 'bg-black/20 text-white' : 'bg-white/5 text-[var(--success)]'
+              activeTab === 'upcoming' ? 'bg-black/20 text-white' : 'bg-white/5 text-[#32D74B]'
             }`}>
               {upcomingTasks.length}
             </span>
@@ -538,7 +538,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
         </div>
       </div>
 
-      {/* LIST */}
+      {/* LIST: Увеличили расстояние между карточками (space-y-4) и добавили верхний отступ (pt-2) */}
       <div className="flex-1 overflow-y-auto px-4 pt-2 pb-safe-24 space-y-4 custom-scrollbar mask-linear-gradient">
         {displayedTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full pb-32 opacity-30">
@@ -566,16 +566,15 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
                   <div className="flex items-center gap-2 shrink-0">
                     <button 
                       onClick={(e) => { e.stopPropagation(); onReschedule(task); }}
-                      className="p-2.5 text-[var(--info)] rounded-xl active:opacity-50 transition-opacity"
-                      style={{ backgroundColor: 'rgba(var(--info-rgb), 0.1)' }}
+                      className="p-2.5 text-[#0A84FF] active:opacity-50 transition-opacity bg-[#0A84FF]/10 rounded-xl"
                     >
                       <Calendar size={20} strokeWidth={2} />
                     </button>
 
+                    {/* Идеальный iOS Green: чистый HEX, который Tailwind корректно сделает полупрозрачным */}
                     <button 
                       onClick={(e) => { e.stopPropagation(); onMarkDone(task.id); }}
-                      className="px-5 py-2.5 text-[var(--success)] text-[15px] font-bold rounded-xl active:opacity-50 transition-opacity"
-                      style={{ backgroundColor: 'rgba(var(--success-rgb), 0.15)' }}
+                      className="px-5 py-2.5 bg-[#32D74B]/15 text-[#32D74B] text-[15px] font-bold rounded-xl active:opacity-50 transition-opacity"
                     >
                       {t.done}
                     </button>

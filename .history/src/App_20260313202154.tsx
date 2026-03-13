@@ -515,8 +515,7 @@ const VoiceCalendarApp = () => {
               }}
               placeholder={t.subtitle} 
               rows={1}
-              /* Увеличили прозрачность с 20% до 40%, чтобы текст не выглядел заблокированным */
-              className="w-full bg-transparent text-center text-3xl font-semibold outline-none resize-none placeholder:text-white/40"
+              className="w-full bg-transparent text-center text-3xl font-semibold outline-none resize-none placeholder:text-white/20"
             />
           )}
 
