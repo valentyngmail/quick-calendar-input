@@ -349,7 +349,7 @@ export const PlacesDatabaseModal = ({
                 </div>
               )}
             </div>
-          ))
+          )})
         )}
       </div>
     </div>

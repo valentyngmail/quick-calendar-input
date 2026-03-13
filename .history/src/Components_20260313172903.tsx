@@ -262,6 +262,8 @@ export const PlacesDatabaseModal = ({
     window.open(`http://googleusercontent.com/maps.google.com/?q=${encodeURIComponent(location)}`, '_blank');
   };
 
+  const borderColors = ['border-l-[#34C759]', 'border-l-[#0A84FF]', 'border-l-[#FF9500]', 'border-l-[#BF5AF2]', 'border-l-[#FF2D55]'];
+
   return (
     <div className="fixed inset-0 z-[300] bg-black flex flex-col pt-safe">
       
@@ -310,10 +312,13 @@ export const PlacesDatabaseModal = ({
         {filteredPlaces.length === 0 ? (
            <div className="text-center py-20 text-white/20 font-medium">{t.noLocFound}</div>
         ) : (
-          filteredPlaces.map((place) => (
+          filteredPlaces.map((place, index) => {
+            const borderColorClass = borderColors[index % borderColors.length];
+
+            return (
             <div 
               key={place.id} 
-              className={`bg-[#1C1C1E] rounded-2xl p-4 transition-all active:scale-[0.98] active:bg-[#2C2C2E] ${onSelect ? 'cursor-pointer' : ''}`}
+              className={`bg-[#1C1C1E] rounded-2xl p-4 border-l-4 ${borderColorClass} transition-all active:scale-[0.97] active:bg-[#2C2C2E] ${onSelect ? 'cursor-pointer' : ''}`}
               onClick={() => { 
                 if (onSelect && editingId !== place.id) onSelect(place.location); 
               }}
@@ -349,7 +354,7 @@ export const PlacesDatabaseModal = ({
                 </div>
               )}
             </div>
-          ))
+          )})
         )}
       </div>
     </div>
@@ -479,9 +484,9 @@ export const ReviewScreen = ({
 
       {/* Магия: если промпта нет (дубликат), блок не показываем вовсе */}
       {rawInputStore && rawInputStore.trim() !== '' && (
-        <div className="bg-[#1C1C1E] rounded-xl p-4 mb-8">
-          <p className="text-[12px] text-white/40 mb-1 font-bold uppercase tracking-widest">{t.promptLabel}</p>
-          <p className="text-[15px] text-white/60 leading-relaxed italic">{rawInputStore}</p>
+        <div className="bg-[#34C759]/5 border border-[#34C759]/20 rounded-xl p-4 mb-8">
+          <p className="text-[13px] text-[#34C759]/60 mb-1 font-bold uppercase tracking-widest">{t.promptLabel}</p>
+          <p className="text-[15px] text-[#34C759] leading-relaxed italic">{rawInputStore}</p>
         </div>
       )}
     </div>
