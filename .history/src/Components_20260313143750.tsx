@@ -215,7 +215,7 @@ export const SettingsModal = ({
 };
 
 // ==========================================
-// 4. PLACES DATABASE MODAL (CLEAN FULL SCREEN)
+// 4. PLACES DATABASE MODAL (iOS Bottom Sheet Design)
 // ==========================================
 interface PlacesDatabaseModalProps {
   open: boolean; onClose: () => void; places: FavoritePlace[]; setPlaces: (p: FavoritePlace[]) => void; onSelect?: (location: string) => void; t: Dictionary;
@@ -265,97 +265,107 @@ export const PlacesDatabaseModal = ({
   const borderColors = ['border-l-[#34C759]', 'border-l-[#0A84FF]', 'border-l-[#FF9500]', 'border-l-[#BF5AF2]', 'border-l-[#FF2D55]'];
 
   return (
-    <div className="fixed inset-0 z-[300] bg-black flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <div className="fixed inset-0 z-[300] bg-black/60 backdrop-blur-sm flex items-end justify-center sm:items-center sm:p-4 transition-all" onClick={onClose}>
       
-      {/* 1. HEADER (Идеально как в Настройках) */}
-      <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
-        <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel}</button>
-        <h2 className="text-[17px] font-semibold flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-[#34C759]" /> {onSelect ? t.selectAddress : t.dbTitle}
-        </h2>
-        <div className="w-[60px] flex justify-end">
-          {!onSelect && (
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                const data = localStorage.getItem(FAV_PLACES_KEY);
-                if (data && data !== '[]') {
-                  navigator.clipboard.writeText(data);
-                  toast.success('Copied!');
-                }
-              }} 
-              className="text-[#34C759]"
-            >
-              <Copy className="w-5 h-5" />
+      <div className="bg-[#1C1C1E] w-full max-w-lg h-[85vh] rounded-t-[32px] sm:rounded-3xl flex flex-col shadow-2xl relative" onClick={e => e.stopPropagation()}>
+        
+        <div className="w-12 h-1.5 bg-white/20 rounded-full mx-auto mt-3 shrink-0"></div>
+
+        <div className="flex items-center justify-between px-6 pt-4 pb-4 shrink-0">
+          <h2 className="text-[20px] font-bold text-white flex items-center gap-2">
+            <BookOpen className="w-6 h-6 text-[#34C759]" /> 
+            {onSelect ? t.selectAddress : t.dbTitle}
+          </h2>
+          <div className="flex items-center gap-2">
+            {!onSelect && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const data = localStorage.getItem(FAV_PLACES_KEY);
+                  if (data && data !== '[]') {
+                    navigator.clipboard.writeText(data);
+                    toast.success('Database copied to clipboard!');
+                  } else {
+                    toast.error('Database is empty!');
+                  }
+                }} 
+                className="p-2 text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-colors"
+                title="Copy Database Text"
+              >
+                <Copy className="w-5 h-5" />
+              </button>
+            )}
+            <button onClick={onClose} className="p-2 text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-colors">
+              <X className="w-5 h-5" />
             </button>
+          </div>
+        </div>
+        
+        <div className="px-6 pb-4 shrink-0 border-b border-white/5">
+          <div className="relative">
+            <Search className="w-5 h-5 absolute left-4 top-3.5 text-white/40" />
+            <input 
+              type="text" 
+              value={search} 
+              onChange={e => setSearch(e.target.value)} 
+              placeholder={t.searchDb} 
+              className="w-full bg-white/5 border border-transparent rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-white/30 focus:outline-none focus:border-[#34C759]/50 focus:bg-white/10 transition-all" 
+            />
+          </div>
+          <p className="text-[11px] text-white/30 mt-3 ml-1 uppercase tracking-widest font-medium">{t.found}: {filteredPlaces.length}</p>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 pt-4 pb-[calc(env(safe-area-inset-bottom)+24px)] space-y-4 custom-scrollbar">
+          {filteredPlaces.length === 0 ? (
+             <div className="text-center py-10 text-white/40">{t.noLocFound}</div>
+          ) : (
+            filteredPlaces.map((place, index) => {
+              const borderColorClass = borderColors[index % borderColors.length];
+
+              return (
+              <div 
+                key={place.id} 
+                className={`bg-white/5 rounded-2xl p-4 border-l-4 ${borderColorClass} transition-transform active:scale-[0.98] ${onSelect ? 'cursor-pointer hover:bg-white/10' : ''}`}
+                onClick={() => { 
+                  if (onSelect && editingId !== place.id) onSelect(place.location); 
+                }}
+              >
+                {editingId === place.id ? (
+                  <div className="space-y-3" onClick={e => e.stopPropagation()}>
+                    <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-sm text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" placeholder="Meeting Title" />
+                    <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-sm text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" placeholder="Address" />
+                    <div className="flex gap-2 justify-end mt-2">
+                      <button onClick={() => setEditingId(null)} className="px-4 py-2 text-xs font-bold text-white/50 hover:text-white transition-colors">Cancel</button>
+                      <button onClick={() => saveEdit(place.id)} className="px-4 py-2 text-xs bg-[#34C759] text-black rounded-lg font-bold">Save</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-white text-[16px] truncate leading-tight mb-1.5">{place.title || 'Untitled Meeting'}</h3>
+                      <div 
+                        onClick={(e) => {
+                          if (!onSelect) openGoogleMaps(e, place.location);
+                        }} 
+                        className={`flex items-start gap-1.5 text-white/40 transition-colors ${!onSelect ? 'cursor-pointer hover:text-[#34C759]' : ''}`} 
+                      >
+                        <MapPin className="w-3.5 h-3.5 shrink-0 mt-[2px]" />
+                        <span className="text-[13px] break-words leading-snug">{place.location}</span>
+                      </div>
+                    </div>
+                    
+                    {!onSelect && (
+                      <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => startEdit(place)} className="p-2.5 text-white/30 hover:text-white hover:bg-white/10 rounded-xl transition-all"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => handleDelete(place.id)} className="p-2.5 text-white/30 hover:text-[#FF453A] hover:bg-[#FF453A]/10 rounded-xl transition-all"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )})
           )}
         </div>
-      </div>
-      
-      {/* 2. SEARCH BAR (Светлее и чище) */}
-      <div className="px-4 py-3 border-b border-white/10 shrink-0 bg-[#1C1C1E]/50">
-        <div className="relative">
-          <Search className="w-5 h-5 absolute left-3 top-2.5 text-white/20" />
-          <input 
-            type="text" 
-            value={search} 
-            onChange={e => setSearch(e.target.value)} 
-            placeholder={t.searchDb} 
-            className="w-full bg-white/5 border border-transparent rounded-lg pl-10 pr-4 py-2 text-[16px] text-white placeholder:text-white/20 focus:outline-none focus:bg-white/10 transition-all" 
-          />
-        </div>
-        <p className="text-[11px] text-white/20 mt-2.5 ml-1 uppercase tracking-widest font-bold">{t.found}: {filteredPlaces.length}</p>
-      </div>
-
-      {/* 3. CARDS LIST (Теперь на весь экран) */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+24px)] space-y-3 custom-scrollbar">
-        {filteredPlaces.length === 0 ? (
-           <div className="text-center py-20 text-white/20 font-medium">{t.noLocFound}</div>
-        ) : (
-          filteredPlaces.map((place, index) => {
-            const borderColorClass = borderColors[index % borderColors.length];
-
-            return (
-            <div 
-              key={place.id} 
-              className={`bg-[#1C1C1E] rounded-2xl p-4 border-l-4 ${borderColorClass} transition-all active:scale-[0.97] active:bg-[#2C2C2E] ${onSelect ? 'cursor-pointer' : ''}`}
-              onClick={() => { 
-                if (onSelect && editingId !== place.id) onSelect(place.location); 
-              }}
-            >
-              {editingId === place.id ? (
-                <div className="space-y-3" onClick={e => e.stopPropagation()}>
-                  <input value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
-                  <input value={editForm.location} onChange={e => setEditForm({...editForm, location: e.target.value})} className="w-full bg-black/40 text-white px-4 py-3 rounded-xl outline-none focus:border-[#34C759] border border-transparent" />
-                  <div className="flex gap-2 justify-end">
-                    <button onClick={() => setEditingId(null)} className="px-4 py-2 text-sm font-bold text-white/40">Cancel</button>
-                    <button onClick={() => saveEdit(place.id)} className="px-5 py-2 bg-[#34C759] text-black rounded-lg font-bold">Save</button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex justify-between items-start gap-4">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white text-[17px] truncate leading-tight mb-1">{place.title || 'Untitled'}</h3>
-                    <div 
-                      onClick={(e) => { if (!onSelect) openGoogleMaps(e, place.location); }} 
-                      className={`flex items-start gap-1.5 text-white/30 ${!onSelect ? 'cursor-pointer hover:text-[#34C759]' : ''}`} 
-                    >
-                      <MapPin className="w-3.5 h-3.5 shrink-0 mt-[3px]" />
-                      <span className="text-[14px] break-words leading-tight">{place.location}</span>
-                    </div>
-                  </div>
-                  
-                  {!onSelect && (
-                    <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
-                      <button onClick={() => startEdit(place)} className="p-2 text-white/20 hover:text-white transition-colors"><Edit2 className="w-4 h-4" /></button>
-                      <button onClick={() => handleDelete(place.id)} className="p-2 text-white/20 hover:text-[#FF453A] transition-colors"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )})
-        )}
       </div>
     </div>
   );
