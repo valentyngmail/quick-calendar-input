@@ -65,10 +65,10 @@ const VoiceCalendarApp = () => {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`, { headers: { 'Accept-Language': 'ru-RU,en;q=0.9' }});
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      const suggestions = data.map((item: { display_name: string }) => item.display_name);
+      const suggestions = data.map((item: any) => item.display_name);
       setLocationSuggestions(suggestions);
       setShowLocationDropdown(suggestions.length > 0);
-    } catch (err: unknown) { setLocationSuggestions([]); }
+    } catch (err) { setLocationSuggestions([]); }
   }, []);
 
   const handleLocationChange = (val: string) => {
@@ -118,7 +118,7 @@ const VoiceCalendarApp = () => {
       });
       
       setPhase('validation');
-    } catch (e: unknown) { 
+    } catch (e) { 
       const errorMsg = e instanceof Error ? e.message : 'Decoding failed';
       addLog(`❌ [DECODE ERROR] ${errorMsg}`);
       setErrorMessage(errorMsg); 
@@ -149,7 +149,7 @@ const VoiceCalendarApp = () => {
       isoStart = startDateObj.toISOString();
       const durationMins = parseInt(String(parsedEvent.duration), 10) || 60;
       isoEnd = new Date(startDateObj.getTime() + durationMins * 60000).toISOString();
-    } catch (err: unknown) { addLog(`⚠️ [DATE ERROR] Failed to parse dates`); }
+    } catch (err) { addLog(`⚠️ [DATE ERROR] Failed to parse dates`); }
 
     const savePayload = {
       ...parsedEvent,
@@ -178,7 +178,7 @@ const VoiceCalendarApp = () => {
       setHistory(prev => [parsedEvent, ...prev].slice(0, 10));
       setPhase('success');
       setTimeout(() => { setPhase('idle'); setTextInput(''); }, 2000);
-    } catch (e: unknown) { 
+    } catch (e) { 
       addLog(`❌ [SAVE EXCEPTION] ${e instanceof Error ? e.message : 'Unknown error'}`);
       setErrorMessage("Save failed. Check Debug Console."); 
       setPhase('error'); 
@@ -199,7 +199,7 @@ const VoiceCalendarApp = () => {
         toast.success(`Synced ${data.length} locations`);
         setShowSyncModal(false);
       }
-    } catch (e: unknown) { toast.error("Sync error"); } 
+    } catch (e) { toast.error("Sync error"); } 
     finally { setIsSyncing(false); setSyncProgress(""); }
   };
 

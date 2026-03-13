@@ -33,8 +33,9 @@ const SettingsRow = ({ label, icon, bgColor, children }: { label: string; icon: 
 );
 
 // ==========================================
-// 2. SYNC MODAL
+// 2. SYNC MODAL (Новое окно для истории)
 // ==========================================
+// 1. Добавляем строгий интерфейс для пропсов
 interface SyncModalProps {
   open: boolean;
   onClose: () => void;
@@ -45,7 +46,10 @@ interface SyncModalProps {
   syncProgress: string;
 }
 
-export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isSyncing, syncProgress }: SyncModalProps) => {
+// 2. Меняем any на наш новый интерфейс SyncModalProps
+export const SyncModal = ({ 
+  open, onClose, settings, onSaveSettings, onSync, isSyncing, syncProgress 
+}: SyncModalProps) => {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[250] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
@@ -71,7 +75,7 @@ export const SyncModal = ({ open, onClose, settings, onSaveSettings, onSync, isS
              disabled={isSyncing || !settings.fetchLocationsWebhook}
              className="flex-1 py-3.5 bg-[#34C759] text-black rounded-xl font-bold disabled:opacity-50 flex items-center justify-center gap-2 active:scale-95 transition-transform"
            >
-             {isSyncing && <Loader2 className="animate-spin" size={18}/>}
+             {isSyncing ? <Loader2 className="animate-spin" size={18}/> : null}
              {isSyncing ? 'Syncing...' : 'Start Sync'}
            </button>
          </div>
@@ -160,9 +164,6 @@ export const SettingsModal = ({
           <SettingsRow label="Security Key" icon={<Lock />} bgColor="bg-[#8E8E93]">
             <input type="password" value={local.securityKey} onChange={e => setLocal({...local, securityKey: e.target.value})} className="bg-transparent text-right outline-none text-white/60 w-full" />
           </SettingsRow>
-          <SettingsRow label="Debug Console" icon={<Bug />} bgColor="bg-[#FF9500]">
-            <Toggle checked={showDebug} onChange={setShowDebug} />
-          </SettingsRow>
         </div>
       </div>
 
@@ -177,7 +178,7 @@ export const SettingsModal = ({
 // 4. PLACES DATABASE MODAL
 // ==========================================
 interface PlacesDatabaseModalProps {
-  open: boolean; onClose: () => void; places: FavoritePlace[]; setPlaces: (p: FavoritePlace[]) => void; onSelect?: (location: string) => void; t: Dictionary;
+  open: boolean; onClose: () => void; places: FavoritePlace[]; setPlaces: (p: FavoritePlace[]) => void; onSelect?: (location: string) => void; t: Record<string, string>;
 }
 
 export const PlacesDatabaseModal = ({ 
@@ -276,32 +277,21 @@ export const PlacesDatabaseModal = ({
 };
 
 // ==========================================
-// 5. REVIEW SCREEN
+// 5. REVIEW SCREEN (С Duration и Description)
 // ==========================================
 export const InputRow = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="flex items-center justify-between px-4 py-4 border-b border-white/10 last:border-0 min-h-[56px]">
     <span className="text-[15px] text-white/40 font-medium w-24">{label}</span>
-    <div className="flex-1 flex justify-end items-center">{children}</div>
+    <div className="flex-1 flex justify-end">{children}</div>
   </div>
 );
 
 interface ReviewScreenProps {
-  parsedEvent: ParsedEvent; 
-  setParsedEvent: (event: ParsedEvent) => void; 
-  rawInputStore: string; 
-  t: Dictionary; 
-  onCancel: () => void; 
-  onSave: () => void; 
-  onLocationChange: (loc: string) => void;
-  locationSuggestions: string[];
-  showLocationDropdown: boolean;
-  onSelectLocation: (loc: string) => void;
-  onOpenDatabase: () => void;
+  parsedEvent: ParsedEvent; setParsedEvent: (event: ParsedEvent) => void; rawInputStore: string; t: Dictionary; onCancel: () => void; onSave: () => void; onLocationChange: (loc: string) => void;
 }
 
 export const ReviewScreen = ({ 
-  parsedEvent, setParsedEvent, rawInputStore, t, onCancel, onSave, 
-  onLocationChange, locationSuggestions, showLocationDropdown, onSelectLocation, onOpenDatabase
+  parsedEvent, setParsedEvent, rawInputStore, t, onCancel, onSave, onLocationChange 
 }: ReviewScreenProps) => (
   <div className="fixed inset-0 bg-black z-[150] flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
     <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0">
@@ -328,30 +318,20 @@ export const ReviewScreen = ({
         </InputRow>
       </div>
 
-      <div className="bg-[#1C1C1E] rounded-xl mb-6 relative">
-        <InputRow label={t.location}>
-          <input type="text" value={parsedEvent.location} onChange={e => onLocationChange(e.target.value)} className="bg-transparent text-right outline-none text-white/60 w-full" placeholder="Address" />
-          <button onClick={onOpenDatabase} className="ml-3 p-1.5 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-[#34C759]">
-            <BookOpen size={18} />
-          </button>
-        </InputRow>
-        
-        {showLocationDropdown && (
-          <div className="absolute z-50 left-0 right-0 top-[56px] bg-[#2C2C2E] border border-white/10 rounded-b-xl shadow-2xl max-h-48 overflow-y-auto">
-            {locationSuggestions.map((loc, i) => (
-              <button key={i} onClick={() => onSelectLocation(loc)} className="w-full text-left px-4 py-3 text-sm text-white hover:bg-white/10 border-b border-white/5 last:border-0 truncate transition-colors">
-                <MapPin size={14} className="inline mr-2 text-[#34C759]" /> {loc}
-              </button>
-            ))}
-          </div>
-        )}
-        
+      <div className="bg-[#1C1C1E] rounded-xl overflow-hidden mb-6">
+        <InputRow label={t.location}><input type="text" value={parsedEvent.location} onChange={e => onLocationChange(e.target.value)} className="bg-transparent text-right outline-none text-white/60 w-full" placeholder="Location" /></InputRow>
         <InputRow label="Guests"><input type="text" value={parsedEvent.guests} onChange={e => setParsedEvent({...parsedEvent, guests: e.target.value})} className="bg-transparent text-right outline-none text-white/60 w-full" placeholder="Emails" /></InputRow>
       </div>
 
+      {/* Поле для редактирования Description */}
       <div className="bg-[#1C1C1E] rounded-xl overflow-hidden mb-6 p-4">
         <label className="text-[13px] text-white/40 mb-2 font-bold uppercase tracking-widest block">Description</label>
-        <textarea value={parsedEvent.description} onChange={e => setParsedEvent({...parsedEvent, description: e.target.value})} className="w-full bg-transparent text-[15px] outline-none resize-none placeholder:text-white/20" rows={4} />
+        <textarea 
+          value={parsedEvent.description} 
+          onChange={e => setParsedEvent({...parsedEvent, description: e.target.value})}
+          className="w-full bg-transparent text-[15px] outline-none resize-none placeholder:text-white/20"
+          rows={4}
+        />
       </div>
 
       <div className="bg-[#34C759]/5 border border-[#34C759]/20 rounded-xl p-4 mb-8">
