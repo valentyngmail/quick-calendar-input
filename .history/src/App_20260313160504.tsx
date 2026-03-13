@@ -143,22 +143,8 @@ const VoiceCalendarApp = () => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       
-      // Честно описываем структуру ответа, чтобы TypeScript был счастлив
-      interface OSMItem {
-        display_name: string;
-        name?: string;
-        address?: {
-          road?: string;
-          pedestrian?: string;
-          house_number?: string;
-          city?: string;
-          town?: string;
-          village?: string;
-        };
-      }
-
       // Форматируем красиво: "Улица Дом, Город"
-      const suggestions = data.map((item: OSMItem) => {
+      const suggestions = data.map((item: any) => {
         const addr = item.address;
         if (!addr) return item.display_name.split(',').slice(0, 3).join(',');
         
