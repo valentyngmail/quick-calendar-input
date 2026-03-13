@@ -530,8 +530,8 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
   return (
     <div className="fixed inset-0 z-[300] bg-black flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
-        <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel}</button>
-        <h2 className="text-[17px] font-semibold">{t.tasksTitle}</h2>
+        <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel || "Закрыть"}</button>
+        <h2 className="text-[17px] font-semibold">{t.tasksTitle || "Мои Задачи"}</h2>
         <div className="w-[60px]" />
       </div>
 
@@ -544,11 +544,11 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
             onClick={() => { setActiveTab('overdue'); setExpandedId(null); }}
             className={`flex-1 flex items-center justify-center h-10 gap-1.5 rounded-full transition-all duration-300 ${
               activeTab === 'overdue' 
-                ? 'bg-red-500 text-white shadow-xl' 
-                : 'text-white/40 active:text-white' 
+                ? 'bg-red-500 text-white shadow-xl' // Активный: красный фон
+                : 'text-white/40 active:text-white' // Неактивный: приглушенный текст
             }`}
           >
-            <span className={`text-[15px] font-semibold ${activeTab === 'overdue' ? '' : 'text-white/80'}`}>{t.overdue}</span>
+            <span className={`text-[15px] font-semibold ${activeTab === 'overdue' ? '' : 'text-white/80'}`}>Хвосты</span>
             <span className={`px-2.5 py-0.5 rounded-full text-[12px] font-bold ${
               activeTab === 'overdue' 
                 ? 'bg-black/30 text-white' // Счетчик: на красном фоне
@@ -563,11 +563,11 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
             onClick={() => { setActiveTab('upcoming'); setExpandedId(null); }}
             className={`flex-1 flex items-center justify-center h-10 gap-1.5 rounded-full transition-all duration-300 ${
               activeTab === 'upcoming' 
-                ? 'bg-[#34C759] text-black shadow-xl' 
-                : 'text-white/40 active:text-white' 
+                ? 'bg-[#34C759] text-black shadow-xl' // Активный: зеленый фон
+                : 'text-white/40 active:text-white' // Неактивный: приглушенный текст
             }`}
           >
-            <span className={`text-[15px] font-semibold ${activeTab === 'upcoming' ? '' : 'text-white/80'}`}>{t.upcoming}</span>
+            <span className={`text-[15px] font-semibold ${activeTab === 'upcoming' ? '' : 'text-white/80'}`}>Предстоящие</span>
             <span className={`px-2.5 py-0.5 rounded-full text-[12px] font-bold ${
               activeTab === 'upcoming' 
                 ? 'bg-black/30 text-black' // Счетчик: на зеленом фоне
@@ -583,7 +583,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
         {displayedTasks.length === 0 ? (
           <div className="text-center py-20 text-white/20 font-medium">
-            {activeTab === 'overdue' ? t.noOverdue : t.noUpcoming}
+            {activeTab === 'overdue' ? 'Все хвосты подчищены! 🎉' : 'Нет будущих задач! 🏖️'}
           </div>
         ) : (
           displayedTasks.map((task) => {
@@ -614,7 +614,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
                       onClick={(e) => { e.stopPropagation(); onMarkDone(task.id); }}
                       className="px-4 py-2 bg-[#34C759] text-black text-[14px] font-bold rounded-xl active:scale-95 transition-transform ml-1"
                     >
-                      {t.done}
+                      {t.done || "Готово"}
                     </button>
                   </div>
                 </div>
