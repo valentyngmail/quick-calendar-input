@@ -568,7 +568,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
       </div>
 
       {/* 3. LIST */}
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 pb-safe-24 custom-scrollbar mask-linear-gradient">
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 pb-safe-24 custom-scrollbar">
         {displayedTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 opacity-20">
              <Check size={48} className="mb-4" />
@@ -610,7 +610,7 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
                 </div>
 
                 {expandedId === task.id && task.description && (
-                  <div className="mt-3 pt-3 border-t border-white/5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="mt-3 pt-3 border-t border-white/5">
                     <p className="text-[14px] text-white/60 whitespace-pre-wrap leading-relaxed">
                       {task.description}
                     </p>

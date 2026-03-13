@@ -494,85 +494,86 @@ export const ReviewScreen = ({
   </div>
 );
 
-// ==// ==========================================
-// 8. TASKS LIST MODAL (Хвосты)
 // ==========================================
-export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule, t }: { 
-  open: boolean; 
-  onClose: () => void; 
-  tasks: ParsedEvent[]; 
-  onMarkDone: (id: number) => void;
-  onReschedule: (task: ParsedEvent) => void;
+// 6. TASKS LIST MODAL (ХВОСТЫ)
+// ==========================================
+interface TasksListModalProps {
+  open: boolean;
+  onClose: () => void;
+  tasks: ParsedEvent[];
+  onMarkDone: (taskId: number) => void;
+  onReschedule: (task: ParsedEvent) => void; // Добавили новый проп
   t: Dictionary;
-}) => {
-  const [activeTab, setActiveTab] = useState<'overdue' | 'upcoming'>('overdue');
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+}
+
+export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule, t }: TasksListModalProps) => {
+  const [expandedId, setExpandedId] = React.useState<number | null>(null);
+  // Новое состояние для вкладок: по умолчанию открыты 'overdue' (Хвосты)
+  const [activeTab, setActiveTab] = React.useState<'overdue' | 'upcoming'>('overdue');
 
   if (!open) return null;
 
+  // Разбиваем задачи на две группы
   const todayStr = new Date().toISOString().split('T')[0];
-  
-  // Сортировка и фильтрация
-  const overdueTasks = tasks
-    .filter(t => t.date <= todayStr)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
-    
-  const upcomingTasks = tasks
-    .filter(t => t.date > todayStr)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
-    
+  const overdueTasks = tasks.filter(t => t.date <= todayStr);
+  const upcomingTasks = tasks.filter(t => t.date > todayStr);
+
+  // Выбираем, какой список показывать сейчас
   const displayedTasks = activeTab === 'overdue' ? overdueTasks : upcomingTasks;
 
   return (
-    <div className="fixed inset-0 z-[400] bg-black flex flex-col pt-safe">
-      {/* 1. HEADER */}
+    <div className="fixed inset-0 z-[300] bg-black flex flex-col pt-safe">
       <div className="flex items-center justify-between px-4 h-11 border-b border-white/10 bg-black/80 backdrop-blur-xl sticky top-0 shrink-0">
         <button onClick={onClose} className="text-[#34C759] text-[17px] font-medium">{t.cancel}</button>
-        <h2 className="text-[17px] font-semibold flex items-center gap-2">
-          <History className="w-5 h-5 text-[#34C759]" /> {t.tasksTitle}
-        </h2>
-        <div className="w-[60px]" /> 
+        <h2 className="text-[17px] font-semibold">{t.tasksTitle}</h2>
+        <div className="w-[60px]" />
       </div>
 
-      {/* 2. TABS (Segmented Control Style) */}
+      {/* ПЕРЕДЕЛАННЫЙ ПЕРЕКЛЮЧАТЕЛЬ (Native iOS Control Style) */}
       <div className="px-4 py-3 shrink-0">
         <div className="flex items-center p-0.5 bg-[#1C1C1E] rounded-[9px] w-full">
+          
+          {/* Сегмент: ХВОСТЫ */}
           <button 
             onClick={() => { setActiveTab('overdue'); setExpandedId(null); }}
-            className={`flex-1 flex items-center justify-center h-[32px] gap-2 rounded-[7px] transition-all duration-200 ${
-              activeTab === 'overdue' ? 'bg-[#636366] shadow-sm text-white' : 'text-white/60'
+            className={`flex-1 flex items-center justify-center h-[30px] gap-1.5 rounded-[7px] transition-all duration-200 ${
+              activeTab === 'overdue' 
+                ? 'bg-[#636366] shadow-sm text-white' 
+                : 'text-white/60 hover:text-white' 
             }`}
           >
             <span className="text-[13px] font-semibold">{t.overdue}</span>
-            <span className={`px-1.5 py-0.5 rounded-md text-[11px] font-bold min-w-[18px] text-center ${
-              activeTab === 'overdue' ? 'bg-black/20 text-white' : 'bg-white/5 text-[#FF453A]'
+            <span className={`px-1.5 py-0.5 rounded-md text-[11px] font-bold ${
+              activeTab === 'overdue' ? 'bg-black/20' : 'bg-black/20 text-[#FF453A]'
             }`}>
               {overdueTasks.length}
             </span>
           </button>
 
+          {/* Сегмент: ПРЕДСТОЯЩИЕ */}
           <button 
             onClick={() => { setActiveTab('upcoming'); setExpandedId(null); }}
-            className={`flex-1 flex items-center justify-center h-[32px] gap-2 rounded-[7px] transition-all duration-200 ${
-              activeTab === 'upcoming' ? 'bg-[#636366] shadow-sm text-white' : 'text-white/60'
+            className={`flex-1 flex items-center justify-center h-[30px] gap-1.5 rounded-[7px] transition-all duration-200 ${
+              activeTab === 'upcoming' 
+                ? 'bg-[#636366] shadow-sm text-white' 
+                : 'text-white/60 hover:text-white' 
             }`}
           >
             <span className="text-[13px] font-semibold">{t.upcoming}</span>
-            <span className={`px-1.5 py-0.5 rounded-md text-[11px] font-bold min-w-[18px] text-center ${
-              activeTab === 'upcoming' ? 'bg-black/20 text-white' : 'bg-white/5 text-[#34C759]'
+            <span className={`px-1.5 py-0.5 rounded-md text-[11px] font-bold ${
+              activeTab === 'overdue' ? 'bg-black/20 text-[#34C759]' : 'bg-black/20'
             }`}>
               {upcomingTasks.length}
             </span>
           </button>
+
         </div>
       </div>
 
-      {/* 3. LIST */}
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 pb-safe-24 custom-scrollbar mask-linear-gradient">
+      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
         {displayedTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 opacity-20">
-             <Check size={48} className="mb-4" />
-             <p className="text-[17px] font-medium">{t.noTasks}</p>
+          <div className="text-center py-20 text-white/20 font-medium">
+            {activeTab === 'overdue' ? t.noOverdue : t.noUpcoming}
           </div>
         ) : (
           displayedTasks.map((task) => {
@@ -582,27 +583,26 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
               <div 
                 key={task.id} 
                 onClick={() => setExpandedId(expandedId === task.id ? null : task.id)}
-                className="bg-[#1C1C1E] rounded-2xl p-4 flex flex-col shadow-sm cursor-pointer transition-all active:scale-[0.98] active:bg-[#2C2C2E]"
+                className={`bg-[#1C1C1E] border-l-4 ${isOverdue ? 'border-l-red-500' : 'border-l-[#34C759]'} rounded-2xl p-4 flex flex-col shadow-lg cursor-pointer transition-colors hover:bg-white/5`}
               >
                 <div className="flex justify-between items-start">
                   <div className="min-w-0 flex-1 mr-4">
-                    <h3 className="font-bold text-white text-[17px] truncate leading-tight">{task.title}</h3>
-                    <p className={`text-[13px] mt-1 font-medium ${isOverdue ? 'text-[#FF453A]' : 'text-white/40'}`}>
-                      {task.date} • {task.time}
-                    </p>
+                    <h3 className="font-bold text-white text-[16px] truncate">{task.title}</h3>
+                    <p className="text-[13px] text-white/40 mt-1">{task.date} • {task.time}</p>
                   </div>
                   
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button 
                       onClick={(e) => { e.stopPropagation(); onReschedule(task); }}
-                      className="p-2 text-[#0A84FF] active:opacity-50 transition-opacity"
+                      className="p-2 text-white/30 hover:text-white/80 active:scale-95 transition-all"
+                      title="Reschedule"
                     >
-                      <Calendar size={22} strokeWidth={1.5} />
+                      <Calendar size={20} />
                     </button>
 
                     <button 
                       onClick={(e) => { e.stopPropagation(); onMarkDone(task.id); }}
-                      className="px-4 py-1.5 bg-[#34C759]/15 text-[#34C759] text-[14px] font-bold rounded-[8px] active:opacity-50 transition-opacity ml-1"
+                      className="px-4 py-2 bg-[#34C759] text-black text-[14px] font-bold rounded-xl active:scale-95 transition-transform ml-1"
                     >
                       {t.done}
                     </button>
@@ -610,8 +610,8 @@ export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule,
                 </div>
 
                 {expandedId === task.id && task.description && (
-                  <div className="mt-3 pt-3 border-t border-white/5 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <p className="text-[14px] text-white/60 whitespace-pre-wrap leading-relaxed">
+                  <div className="mt-3 pt-3 border-t border-white/5">
+                    <p className="text-[13px] text-white/60 whitespace-pre-wrap leading-relaxed">
                       {task.description}
                     </p>
                   </div>

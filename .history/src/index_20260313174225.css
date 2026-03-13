@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 20% 7%;
+    --foreground: 0 0% 95%;
+    --card: 220 18% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 220 18% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 145 80% 50%;
+    --primary-foreground: 220 20% 7%;
+    --secondary: 220 16% 16%;
+    --secondary-foreground: 0 0% 85%;
+    --muted: 220 14% 14%;
+    --muted-foreground: 220 10% 55%;
+    --accent: 145 80% 50%;
+    --accent-foreground: 220 20% 7%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 145 80% 50%;
+    --radius: 0.75rem;
+
+    --glow-primary: 0 0 30px hsl(145 80% 50% / 0.4);
+    --glow-primary-intense: 0 0 60px hsl(145 80% 50% / 0.6), 0 0 120px hsl(145 80% 50% / 0.2);
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .glow-primary { box-shadow: var(--glow-primary); }
+  .glow-primary-intense { box-shadow: var(--glow-primary-intense); }
+
+  /* --- Умные классы для iOS отступов (Safe Areas) --- */
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .pb-safe-16 { padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
+  .pb-safe-24 { padding-bottom: calc(env(safe-area-inset-bottom) + 24px); }
+  .h-header { height: calc(env(safe-area-inset-top) + 60px); }
+  .bottom-safe-16 { bottom: calc(env(safe-area-inset-bottom) + 16px); }
+  .text-align-last-right { text-align-last: right; }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-pulse-ring { animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+/* ==========================================
+   VOICECAL PREMIUM UI (Main Screen)
+   ========================================== */
+body.voicecal-premium {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.recents-scroll::-webkit-scrollbar { display: none; }
+.recents-scroll {
+  scrollbar-width: none;
+  transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease, padding 0.3s ease;
+  max-height: 120px;
+  opacity: 1;
+}
+
+body.keyboard-open .recents-scroll {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+}
+
+.glass-panel {
+  background: rgba(28, 28, 30, 0.75);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
