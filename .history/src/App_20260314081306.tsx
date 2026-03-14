@@ -356,9 +356,9 @@ const VoiceCalendarApp = () => {
       isoEnd = new Date(startDateObj.getTime() + durationMins * 60000).toISOString();
     } catch (err: unknown) { addLog(`⚠️ [DATE ERROR] Failed to parse dates`); }
 
-    // Превращаем строку с почтами в правильный массив объектов для Google Calendar
+    // Превращаем строку с почтами в правильный массив объектов для Google Calendar API
     const rawGuests = parsedEvent.guests || settings.defaultGuests;
-    const formattedGuests = rawGuests 
+    const mappedAttendees = rawGuests 
       ? rawGuests.split(',').map(email => ({ email: email.trim() })).filter(obj => obj.email !== '')
       : [];
 
@@ -370,7 +370,8 @@ const VoiceCalendarApp = () => {
       securityKey: settings.securityKey,
       organizerEmail: settings.organizerEmail,
       calendarId: settings.calendarId || 'primary',
-      guests: formattedGuests, // <-- Теперь здесь правильный массив: [{ email: "..." }]
+      guests: rawGuests, // Оставляем строкой для истории
+      attendees: mappedAttendees, // <-- НОВЫЙ ГОТОВЫЙ МАССИВ ДЛЯ MAKE.COM
       guestsCanModify: true, reminder: 15, skipTranslation, interfaceLang: appLang 
     };
 
