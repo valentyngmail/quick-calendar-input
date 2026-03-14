@@ -195,13 +195,13 @@ export const SettingsModal = ({
         <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">{t.identitySection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden">
           <SettingsRow label={t.organizer} icon={<Mail />} bgColor="bg-[#FF9500]">
-            <input type="email" value={local.organizerEmail} onFocus={handleInputFocus} onChange={e => setLocal({...local, organizerEmail: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="email@example.com" />
+            <input type="email" value={local.organizerEmail} onChange={e => setLocal({...local, organizerEmail: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="email@example.com" />
           </SettingsRow>
           <SettingsRow label={t.defaultGuests} icon={<Users />} bgColor="bg-[#007AFF]">
-            <input type="text" value={local.defaultGuests} onFocus={handleInputFocus} onChange={e => setLocal({...local, defaultGuests: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="guest1@mail.com" />
+            <input type="text" value={local.defaultGuests} onChange={e => setLocal({...local, defaultGuests: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="guest1@mail.com" />
           </SettingsRow>
           <SettingsRow label={t.calendarId} icon={<Hash />} bgColor="bg-[#FF3B30]">
-            <input type="text" value={local.calendarId} onFocus={handleInputFocus} onChange={e => setLocal({...local, calendarId: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="primary" />
+            <input type="text" value={local.calendarId} onChange={e => setLocal({...local, calendarId: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20 truncate" placeholder="primary" />
           </SettingsRow>
         </div>
 
@@ -209,11 +209,11 @@ export const SettingsModal = ({
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden">
           <div className="py-3 border-b border-white/10">
              <div className="flex items-center gap-3 mb-1"><div className="w-7 h-7 rounded-md bg-[#8E8E93] flex items-center justify-center text-white"><LinkIcon size={16} /></div><span className="text-[17px]">{t.decodeWebhook}</span></div>
-             <input type="url" value={local.decodeWebhook} onFocus={handleInputFocus} onChange={e => setLocal({...local, decodeWebhook: e.target.value})} className="bg-transparent outline-none text-[var(--info)] text-[14px] font-mono w-full placeholder:text-[var(--info)]/40 truncate" placeholder="https://hook.make.com/..." />
+             <input type="url" value={local.decodeWebhook} onChange={e => setLocal({...local, decodeWebhook: e.target.value})} className="bg-transparent outline-none text-[var(--info)] text-[14px] font-mono w-full placeholder:text-[var(--info)]/40 truncate" placeholder="https://hook.make.com/..." />
           </div>
           <div className="py-3">
              <div className="flex items-center gap-3 mb-1"><div className="w-7 h-7 rounded-md bg-[#8E8E93] flex items-center justify-center text-white"><LinkIcon size={16} /></div><span className="text-[17px]">{t.saveWebhook}</span></div>
-             <input type="url" value={local.saveWebhook} onFocus={handleInputFocus} onChange={e => setLocal({...local, saveWebhook: e.target.value})} className="bg-transparent outline-none text-[var(--info)] text-[14px] font-mono w-full placeholder:text-[var(--info)]/40 truncate" placeholder="https://hook.make.com/..." />
+             <input type="url" value={local.saveWebhook} onChange={e => setLocal({...local, saveWebhook: e.target.value})} className="bg-transparent outline-none text-[var(--info)] text-[14px] font-mono w-full placeholder:text-[var(--info)]/40 truncate" placeholder="https://hook.make.com/..." />
           </div>
         </div>
 
@@ -237,7 +237,7 @@ export const SettingsModal = ({
         <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">{t.securitySection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden mb-8">
           <SettingsRow label={t.securityKey} icon={<Lock />} bgColor="bg-[#8E8E93]">
-            <input type="password" value={local.securityKey} onFocus={handleInputFocus} onChange={e => setLocal({...local, securityKey: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20" placeholder="••••••••" />
+            <input type="password" value={local.securityKey} onChange={e => setLocal({...local, securityKey: e.target.value})} className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/20" placeholder="••••••••" />
           </SettingsRow>
           <SettingsRow label={t.debugConsole} icon={<Bug />} bgColor="bg-[#FF9500]">
             <Toggle checked={showDebug} onChange={setShowDebug} />
@@ -543,155 +543,119 @@ interface ReviewScreenProps {
 export const ReviewScreen = ({ 
   parsedEvent, setParsedEvent, rawInputStore, t, onCancel, onSave, 
   onLocationChange, locationSuggestions, showLocationDropdown, onSelectLocation, onOpenDatabase
-}: ReviewScreenProps) => {
-
-  // --- ФИКС КЛАВИАТУРЫ IOS ---
-  const [kbOffset, setKbOffset] = useState(0);
-
-  useEffect(() => { 
-    const vv = window.visualViewport;
-    if (!vv) { setKbOffset(0); return; }
+}: ReviewScreenProps) => (
+  <div className="fixed inset-0 bg-[var(--bg-main)] z-[150] flex flex-col pt-safe">
     
-    const onResize = () => {
-      const offset = window.innerHeight - vv.height;
-      setKbOffset(offset > 50 ? offset : 0);
-    };
-    
-    vv.addEventListener('resize', onResize);
-    onResize(); // Инициализация при маунте
-    return () => vv.removeEventListener('resize', onResize);
-  }, []);
-
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    // Даем клавиатуре 300мс на появление
-    setTimeout(() => {
-      e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
-  };
-  // --------------------------
-
-  return (
-    <div className="fixed inset-0 bg-[var(--bg-main)] z-[150] flex flex-col pt-safe">
-      
-      {/* HEADER */}
-      <div className="flex items-center justify-between px-4 h-16 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0 z-20">
-        <button onClick={onCancel} className="w-[80px] text-left text-[var(--primary)] text-[17px] font-medium active:opacity-50 transition-opacity">
-          {t.cancel}
-        </button>
-        <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">
-          {t.checkDetails}
-        </h2>
-        <div className="w-[80px] flex justify-end">
-          <Check className="w-5 h-5 text-white/20" />
-        </div>
-      </div>
-
-      <div 
-        className="flex-1 overflow-y-auto px-4 pt-2 custom-scrollbar transition-all duration-300"
-        style={{ paddingBottom: `calc(128px + ${kbOffset}px)` }}
-      >
-        <div className="py-6">
-          <textarea 
-            value={parsedEvent.title} 
-            onFocus={handleInputFocus}
-            onChange={e => setParsedEvent({...parsedEvent, title: e.target.value})} 
-            className="w-full bg-transparent text-white text-[24px] font-bold outline-none resize-none placeholder:text-white/10" 
-            rows={2} 
-          />
-        </div>
-
-        <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6">
-          <InputRow label={t.date}>
-            <input type="date" value={parsedEvent.date} onFocus={handleInputFocus} onChange={e => setParsedEvent({...parsedEvent, date: e.target.value})} className="bg-transparent text-right outline-none text-white text-[17px]" />
-          </InputRow>
-          <InputRow label={t.time}>
-            <input type="time" value={parsedEvent.time} onFocus={handleInputFocus} onChange={e => setParsedEvent({...parsedEvent, time: e.target.value})} className="bg-transparent text-right outline-none text-white text-[17px]" />
-          </InputRow>
-          <InputRow label={t.duration}>
-            <select 
-              value={parsedEvent.duration} 
-              onFocus={handleInputFocus}
-              onChange={e => setParsedEvent({...parsedEvent, duration: e.target.value})} 
-              className="bg-transparent text-white text-[17px] outline-none appearance-none cursor-pointer w-full text-right text-align-last-right"
-            >
-              <option value="15">15 min</option>
-              <option value="30">30 min</option>
-              <option value="60">1 h</option>
-              <option value="120">2 h</option>
-            </select>
-          </InputRow>
-        </div>
-
-        <div className="bg-[var(--bg-surface)] rounded-xl mb-6 relative">
-          <InputRow label={t.location}>
-            <input 
-              type="text" 
-              value={parsedEvent.location} 
-              onFocus={handleInputFocus}
-              onChange={e => onLocationChange(e.target.value)} 
-              className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/10 text-[17px]" 
-              placeholder="Address" 
-            />
-            <button onClick={onOpenDatabase} className="ml-3 text-[var(--primary)] active:opacity-50 transition-opacity">
-              <BookOpen size={20} />
-            </button>
-          </InputRow>
-          
-          {showLocationDropdown && (
-            <div className="absolute z-50 left-0 right-0 top-[56px] bg-[var(--bg-surface-elevated)] border border-white/10 rounded-b-xl shadow-2xl max-h-48 overflow-y-auto custom-scrollbar">
-              {locationSuggestions.map((loc, i) => (
-                <button key={i} onClick={() => onSelectLocation(loc)} className="w-full text-left px-4 py-3 text-sm text-white hover:bg-white/10 border-b border-white/5 last:border-0 truncate transition-colors">
-                  <MapPin size={14} className="inline mr-2 text-[var(--primary)]" /> {loc}
-                </button>
-              ))}
-            </div>
-          )}
-          
-          <InputRow label={t.guestsLabel}>
-            <input 
-              type="text" 
-              value={parsedEvent.guests} 
-              onFocus={handleInputFocus}
-              onChange={e => setParsedEvent({...parsedEvent, guests: e.target.value})} 
-              className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/10" 
-              placeholder="email1, email2" 
-            />
-          </InputRow>
-        </div>
-
-        <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6">
-          <InputRow label={t.taskMode}>
-            <Toggle checked={!!parsedEvent.isTask} onChange={(v) => setParsedEvent({...parsedEvent, isTask: v})} />
-          </InputRow>
-        </div>
-
-        <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6 p-4">
-          <label className="text-[13px] text-white/20 mb-2 font-bold uppercase tracking-widest block">{t.descLabel}</label>
-          <textarea 
-            value={parsedEvent.description} 
-            onFocus={handleInputFocus}
-            onChange={e => setParsedEvent({...parsedEvent, description: e.target.value})} 
-            className="w-full bg-transparent text-[15px] text-white/80 outline-none resize-none placeholder:text-white/10" 
-            rows={4} 
-          />
-        </div>
-
-        {rawInputStore && rawInputStore.trim() !== '' && (
-          <div className="bg-[var(--bg-surface)] rounded-xl p-4 mb-8">
-            <p className="text-[12px] text-white/40 mb-1 font-bold uppercase tracking-widest">{t.promptLabel}</p>
-            <p className="text-[15px] text-white/60 leading-relaxed italic">{rawInputStore}</p>
-          </div>
-        )}
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[var(--bg-main)] via-[var(--bg-main)]/90 to-transparent pb-safe-16 px-4">
-        <button onClick={onSave} className="w-full h-14 bg-[var(--primary)] text-white font-bold text-[17px] rounded-2xl shadow-lg active:scale-95 transition-transform">
-          {t.saveToCalendar}
-        </button>
+    {/* HEADER */}
+    <div className="flex items-center justify-between px-4 h-16 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0 z-20">
+      <button onClick={onCancel} className="w-[80px] text-left text-[var(--primary)] text-[17px] font-medium active:opacity-50 transition-opacity">
+        {t.cancel}
+      </button>
+      <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">
+        {t.checkDetails}
+      </h2>
+      <div className="w-[80px] flex justify-end">
+        <Check className="w-5 h-5 text-white/20" />
       </div>
     </div>
-  );
-};
+
+    <div className="flex-1 overflow-y-auto px-4 pb-32 pt-2 custom-scrollbar">
+      <div className="py-6">
+        <textarea 
+          value={parsedEvent.title} 
+          onChange={e => setParsedEvent({...parsedEvent, title: e.target.value})} 
+          className="w-full bg-transparent text-white text-[24px] font-bold outline-none resize-none placeholder:text-white/10" 
+          rows={2} 
+        />
+      </div>
+
+      <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6">
+        <InputRow label={t.date}>
+          <input type="date" value={parsedEvent.date} onChange={e => setParsedEvent({...parsedEvent, date: e.target.value})} className="bg-transparent text-right outline-none text-white text-[17px]" />
+        </InputRow>
+        <InputRow label={t.time}>
+          <input type="time" value={parsedEvent.time} onChange={e => setParsedEvent({...parsedEvent, time: e.target.value})} className="bg-transparent text-right outline-none text-white text-[17px]" />
+        </InputRow>
+        <InputRow label={t.duration}>
+          <select 
+            value={parsedEvent.duration} 
+            onChange={e => setParsedEvent({...parsedEvent, duration: e.target.value})} 
+            className="bg-transparent text-white text-[17px] outline-none appearance-none cursor-pointer w-full text-right text-align-last-right"
+          >
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="60">1 h</option>
+            <option value="120">2 h</option>
+          </select>
+        </InputRow>
+      </div>
+
+      <div className="bg-[var(--bg-surface)] rounded-xl mb-6 relative">
+        <InputRow label={t.location}>
+          <input 
+            type="text" 
+            value={parsedEvent.location} 
+            onChange={e => onLocationChange(e.target.value)} 
+            className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/10 text-[17px]" 
+            placeholder="Address" 
+          />
+          <button onClick={onOpenDatabase} className="ml-3 text-[var(--primary)] active:opacity-50 transition-opacity">
+            <BookOpen size={20} />
+          </button>
+        </InputRow>
+        
+        {showLocationDropdown && (
+          <div className="absolute z-50 left-0 right-0 top-[56px] bg-[var(--bg-surface-elevated)] border border-white/10 rounded-b-xl shadow-2xl max-h-48 overflow-y-auto custom-scrollbar">
+            {locationSuggestions.map((loc, i) => (
+              <button key={i} onClick={() => onSelectLocation(loc)} className="w-full text-left px-4 py-3 text-sm text-white hover:bg-white/10 border-b border-white/5 last:border-0 truncate transition-colors">
+                <MapPin size={14} className="inline mr-2 text-[var(--primary)]" /> {loc}
+              </button>
+            ))}
+          </div>
+        )}
+        
+        <InputRow label={t.guestsLabel}>
+          <input 
+            type="text" 
+            value={parsedEvent.guests} 
+            onChange={e => setParsedEvent({...parsedEvent, guests: e.target.value})} 
+            className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/10" 
+            placeholder="email1, email2" 
+          />
+        </InputRow>
+      </div>
+
+      <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6">
+        <InputRow label={t.taskMode}>
+          <Toggle checked={!!parsedEvent.isTask} onChange={(v) => setParsedEvent({...parsedEvent, isTask: v})} />
+        </InputRow>
+      </div>
+
+      <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6 p-4">
+        <label className="text-[13px] text-white/20 mb-2 font-bold uppercase tracking-widest block">{t.descLabel}</label>
+        <textarea 
+          value={parsedEvent.description} 
+          onChange={e => setParsedEvent({...parsedEvent, description: e.target.value})} 
+          className="w-full bg-transparent text-[15px] text-white/80 outline-none resize-none placeholder:text-white/10" 
+          rows={4} 
+        />
+      </div>
+
+      {rawInputStore && rawInputStore.trim() !== '' && (
+        <div className="bg-[var(--bg-surface)] rounded-xl p-4 mb-8">
+          <p className="text-[12px] text-white/40 mb-1 font-bold uppercase tracking-widest">{t.promptLabel}</p>
+          <p className="text-[15px] text-white/60 leading-relaxed italic">{rawInputStore}</p>
+        </div>
+      )}
+    </div>
+
+    <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[var(--bg-main)] via-[var(--bg-main)]/90 to-transparent pb-safe-16 px-4">
+      <button onClick={onSave} className="w-full h-14 bg-[var(--primary)] text-white font-bold text-[17px] rounded-2xl shadow-lg active:scale-95 transition-transform">
+        {t.saveToCalendar}
+      </button>
+    </div>
+  </div>
+);
 
 // ==========================================
 // 8. TASKS LIST MODAL
