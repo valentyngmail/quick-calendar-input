@@ -532,14 +532,7 @@ const VoiceCalendarApp = () => {
           </div>
         )}
 
-        <div 
-          className="flex-1 flex flex-col justify-center px-6 pb-[100px] w-full max-w-md mx-auto relative cursor-text"
-          onClick={() => {
-            if (phase === 'idle') {
-              inputRef.current?.focus();
-            }
-          }}
-        >
+        <div className="flex-1 flex flex-col justify-center px-6 pb-[100px] w-full max-w-md mx-auto relative">
           {phase === 'idle' && (
             <div className={`relative transition-all duration-500 w-full ${isFocused ? 'scale-[1.02]' : 'scale-100'}`}>
               <textarea
