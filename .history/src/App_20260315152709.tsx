@@ -473,13 +473,7 @@ const VoiceCalendarApp = () => {
   };
 
   return (
-    <div 
-      className="absolute left-0 right-0 bg-[var(--bg-main)] text-white overflow-hidden flex flex-col" 
-      style={{ 
-        height: 'var(--vv-height, 100dvh)', 
-        top: 'var(--vv-top, 0px)' 
-      }}
-    >
+    <div className="fixed top-0 left-0 right-0 bg-[var(--bg-main)] text-white overflow-hidden flex flex-col" style={{ height: 'var(--app-height, 100dvh)' }}>
       
       {/* 1. HEADER (Исправлена логика просрочки!) */}
       <div className="absolute top-0 left-0 right-0 px-4 flex items-center justify-between z-50 h-header pt-safe">
@@ -576,7 +570,7 @@ const VoiceCalendarApp = () => {
         </div>
       </div>
 
-      {/* 3. DOCK */}
+      {/* 3. DOCK (Асимметричный, минималистичный, мощный) */}
       {phase === 'idle' && (
         <div className="absolute left-6 right-6 flex justify-center bottom-safe-16 z-50 transition-all duration-300">
           <div className="bg-[#1C1C1E]/80 backdrop-blur-2xl border border-white/10 rounded-full p-1.5 flex items-center w-full max-w-sm shadow-2xl">
