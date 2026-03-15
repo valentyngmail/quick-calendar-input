@@ -716,16 +716,9 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
 
   if (!open) return null;
 
-  // Точное время и дата
-  const now = new Date();
-  const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-  const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-
-  // Функция строгой проверки: меньше сегодняшней даты ИЛИ сегодня, но время уже прошло
-  const isOverdueCheck = (t: ParsedEvent) => t.date < todayStr || (t.date === todayStr && t.time < timeStr);
-
-  const overdueTasks = tasks.filter(isOverdueCheck).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
-  const upcomingTasks = tasks.filter(t => !isOverdueCheck(t)).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+  const todayStr = new Date().toISOString().split('T')[0];
+  const overdueTasks = tasks.filter(t => t.date <= todayStr).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+  const upcomingTasks = tasks.filter(t => t.date > todayStr).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
   const displayedTasks = activeTab === 'overdue' ? overdueTasks : upcomingTasks;
 
   // 1. Выполнение задачи (перенос вниз)
@@ -801,7 +794,7 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
             </div>
           ) : (
             displayedTasks.map((task) => {
-              const isOverdue = isOverdueCheck(task);
+              const isOverdue = task.date <= todayStr;
               return (
                 <div key={task.id} onClick={() => setExpandedId(expandedId === task.id ? null : task.id)} className="bg-[var(--bg-surface)] rounded-[16px] p-4 flex flex-col shadow-sm cursor-pointer transition-all active:scale-[0.98] active:bg-[var(--bg-surface-elevated)] border border-white/5">
                   <div className="flex items-start gap-3">
