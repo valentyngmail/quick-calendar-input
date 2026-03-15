@@ -338,13 +338,13 @@ const SwipeablePlaceItem = ({
         <input 
           value={editForm.title} 
           onChange={e => setEditForm({...editForm, title: e.target.value})} 
-          placeholder={t.placeName || "Название"} 
+          placeholder="Название" 
           className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-2 focus:border-[var(--primary)] border border-transparent" 
         />
         <input 
           value={editForm.location} 
           onChange={e => setEditForm({...editForm, location: e.target.value})} 
-          placeholder={t.address || "Адрес"} 
+          placeholder="Адрес" 
           className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-3 focus:border-[var(--primary)] border border-transparent" 
         />
         <div className="flex justify-end gap-4">
@@ -539,13 +539,13 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
             <input 
               value={addForm.title} 
               onChange={e => setAddForm({...addForm, title: e.target.value})} 
-              placeholder={t.placeName || "Название"} 
+              placeholder={t.title || "Название"} 
               className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-2 focus:border-[var(--primary)] border border-transparent transition-colors" 
             />
             <input 
               value={addForm.location} 
               onChange={e => setAddForm({...addForm, location: e.target.value})} 
-              placeholder={t.address || "Адрес"} 
+              placeholder={t.location || "Адрес"} 
               className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-3 focus:border-[var(--primary)] border border-transparent transition-colors" 
             />
             <div className="flex justify-end gap-4">
