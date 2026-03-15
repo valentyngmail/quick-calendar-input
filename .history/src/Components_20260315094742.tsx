@@ -232,7 +232,7 @@ export const SettingsModal = ({
         <p className="text-[13px] text-white/40 uppercase mt-8 mb-2 ml-4 tracking-tight">{t.addressesSection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden flex flex-col">
           <button onClick={() => { onClose(); onOpenSyncModal(); }} className="flex items-center gap-3 py-3 text-[var(--primary)] active:opacity-50 transition-opacity">
-             <div className="w-7 h-7 rounded-md bg-[var(--primary)] flex items-center justify-center text-white"><Plus size={16} /></div>
+             <div className="w-7 h-7 rounded-md bg-[var(--primary)] flex items-center justify-center text-white"><RefreshCw size={16} /></div>
              <span className="text-[17px] font-medium">{t.fetchAddresses}</span>
           </button>
         </div>
@@ -364,7 +364,7 @@ const SwipeablePlaceItem = ({
   };
 
   const openGoogleMaps = () => {
-    // Официальный универсальный диплинк Google Maps
+    // ИСПРАВЛЕННАЯ ОФИЦИАЛЬНАЯ ССЫЛКА НА GOOGLE MAPS
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.location)}`, '_blank');
   };
 
