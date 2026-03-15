@@ -530,10 +530,7 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
   return (
     <div className="fixed inset-0 z-[300] bg-[var(--bg-main)] flex flex-col pt-safe">
       <div className="flex items-center justify-between px-4 h-16 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0 z-20">
-        <button onClick={onClose} className="w-[100px] flex items-center text-[var(--primary)] text-[17px] active:opacity-50 transition-opacity -ml-2">
-          <ChevronLeft size={24} className="mr-0.5" />
-          <span className="mt-[1px]">{t.back || 'Zurück'}</span>
-        </button>
+        <button onClick={onClose} className="w-[80px] text-left text-[var(--primary)] text-[17px] font-medium active:opacity-50 transition-opacity">{t.cancel}</button>
         <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">{onSelect ? t.selectAddress : t.dbTitle}</h2>
         <div className="w-[80px] flex justify-end items-center gap-3">
           {!onSelect ? (
@@ -779,7 +776,7 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
           className="w-[100px] flex items-center text-[var(--primary)] text-[17px] active:opacity-50 transition-opacity -ml-2"
         >
           <ChevronLeft size={24} className="mr-0.5" />
-          <span className="mt-[1px]">{t.back || 'Back'}</span>
+          <span className="mt-[1px]">{t.back || 'Zurück'}</span>
         </button>
         <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">
           {t.tasksTitle || "Meine Aufgaben"}
