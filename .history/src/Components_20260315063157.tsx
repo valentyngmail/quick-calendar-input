@@ -412,40 +412,16 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ title: '', location: '' });
   
-  // --- ЛОГИКА ДОБАВЛЕНИЯ ---
-  const [isAdding, setIsAdding] = useState(false);
-  const [addForm, setAddForm] = useState({ title: '', location: '' });
-  
   const [lastDeleted, setLastDeleted] = useState<FavoritePlace | null>(null);
   const undoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => { 
-    if (open) { 
-      setSearch(''); setEditingId(null); setLastDeleted(null); setIsAdding(false); setAddForm({ title: '', location: '' });
-    } 
-  }, [open]);
+  useEffect(() => { if (open) { setSearch(''); setEditingId(null); setLastDeleted(null); } }, [open]);
   if (!open) return null;
 
   const filteredPlaces = places.filter(p => 
     p.title.toLowerCase().includes(search.toLowerCase()) || 
     p.location.toLowerCase().includes(search.toLowerCase())
   );
-
-  const handleAddNew = () => {
-    if (!addForm.location.trim()) return;
-    const newPlace = {
-      id: Date.now().toString(),
-      title: addForm.title.trim() || t.untitled || 'Untitled',
-      location: addForm.location.trim()
-    };
-    const updated = [newPlace, ...places].sort((a, b) => a.title.localeCompare(b.title));
-    setPlaces(updated);
-    localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(updated));
-    setIsAdding(false);
-    setAddForm({ title: '', location: '' });
-    toast.success(t.placeUpdated || 'Added!');
-  };
-  // -------------------------
 
   const handleDelete = (id: string) => {
     const placeToDelete = places.find(p => p.id === id);
@@ -493,20 +469,15 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
         <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">
           {onSelect ? t.selectAddress : t.dbTitle}
         </h2>
-        <div className="w-[80px] flex justify-end items-center gap-3">
+        <div className="w-[80px] flex justify-end">
           {!onSelect ? (
-            <>
-              <button onClick={(e) => {
-                e.stopPropagation();
-                const data = localStorage.getItem(FAV_PLACES_KEY);
-                if (data && data !== '[]') { navigator.clipboard.writeText(data); toast.success(t.copied); }
-              }} className="text-[var(--primary)] active:opacity-50 transition-opacity">
-                <Copy className="w-5 h-5" />
-              </button>
-              <button onClick={() => setIsAdding(!isAdding)} className="text-[var(--primary)] active:opacity-50 transition-opacity">
-                <Plus className="w-6 h-6" />
-              </button>
-            </>
+            <button onClick={(e) => {
+              e.stopPropagation();
+              const data = localStorage.getItem(FAV_PLACES_KEY);
+              if (data && data !== '[]') { navigator.clipboard.writeText(data); toast.success(t.copied); }
+            }} className="text-[var(--primary)] active:opacity-50 transition-opacity">
+              <Copy className="w-5 h-5" />
+            </button>
           ) : (
             <BookOpen className="w-5 h-5 text-white/20" />
           )}
@@ -528,36 +499,6 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
       </div>
 
       <div className="flex-1 overflow-y-auto pb-safe-24 custom-scrollbar mask-linear-gradient relative">
-        
-        {/* ФОРМА ДОБАВЛЕНИЯ НОВОГО АДРЕСА */}
-        {isAdding && (
-          <div className="px-4 py-4 border-b border-white/10 bg-[var(--bg-surface-elevated)] animate-in fade-in slide-in-from-top-2 duration-200">
-            <input 
-              value={addForm.title} 
-              onChange={e => setAddForm({...addForm, title: e.target.value})} 
-              placeholder={t.title || "Название"} 
-              className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-2 focus:border-[var(--primary)] border border-transparent transition-colors" 
-            />
-            <input 
-              value={addForm.location} 
-              onChange={e => setAddForm({...addForm, location: e.target.value})} 
-              placeholder={t.location || "Адрес"} 
-              className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-3 focus:border-[var(--primary)] border border-transparent transition-colors" 
-            />
-            <div className="flex justify-end gap-4">
-              <button onClick={() => setIsAdding(false)} className="text-white/40 font-medium text-[15px]">{t.cancel}</button>
-              <button 
-                onClick={handleAddNew} 
-                disabled={!addForm.location.trim()} 
-                className="text-[var(--primary)] font-bold text-[15px] disabled:opacity-40 transition-opacity"
-              >
-                {t.saveBtn || 'Save'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* СПИСОК АДРЕСОВ */}
         {filteredPlaces.length === 0 ? (
            <div className="text-center py-20 text-white/20 font-medium">{t.noLocFound}</div>
         ) : (

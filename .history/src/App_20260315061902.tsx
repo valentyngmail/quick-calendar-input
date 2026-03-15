@@ -356,27 +356,21 @@ const VoiceCalendarApp = () => {
       isoEnd = new Date(startDateObj.getTime() + durationMins * 60000).toISOString();
     } catch (err: unknown) { addLog(`⚠️ [DATE ERROR] Failed to parse dates`); }
 
-    // Превращаем строку с почтами в массив объектов
+    // Превращаем строку с почтами в правильный массив объектов
     const rawGuests = parsedEvent.guests || ''; 
     const formattedGuests = rawGuests 
       ? rawGuests.split(',').map(email => ({ email: email.trim() })).filter(obj => obj.email !== '')
       : [];
 
-    const savePayload = {
+    const savePayload: any = {
       ...parsedEvent,
-      isoStart, 
-      isoEnd,
+      isoStart, isoEnd,
       start: isoStart, 
       end: isoEnd,
       securityKey: settings.securityKey,
       organizerEmail: settings.organizerEmail,
       calendarId: settings.calendarId || 'primary',
-      guestsCanModify: true, 
-      reminder: 15, 
-      skipTranslation, 
-      interfaceLang: appLang,
-      // Добавляем массив guests только если он не пустой (строгая типизация без any)
-      ...(formattedGuests.length > 0 && { guests: formattedGuests })
+      guestsCanModify: true, reminder: 15, skipTranslation, interfaceLang: appLang 
     };
 
     // Отправляем массив guests ТОЛЬКО если есть хотя бы один гость, 
@@ -429,6 +423,13 @@ const VoiceCalendarApp = () => {
     setHistory(updated);
     localStorage.setItem('calendarHistory', JSON.stringify(updated));
     toast.success(t.deleted);
+  };
+
+  const handleMarkDone = (taskId: number) => {
+    const updated = pendingTasks.filter(t => t.id !== taskId);
+    setPendingTasks(updated);
+    localStorage.setItem('pendingTasks', JSON.stringify(updated));
+    toast.success(t.taskCompleted);
   };
 
   const handleReschedule = (task: ParsedEvent) => {
@@ -617,11 +618,7 @@ const VoiceCalendarApp = () => {
 
       <TasksListModal 
         open={showTasks} onClose={() => setShowTasks(false)} tasks={pendingTasks} 
-        setTasks={(tasks) => {
-          setPendingTasks(tasks);
-          localStorage.setItem('pendingTasks', JSON.stringify(tasks));
-        }}
-        onReschedule={handleReschedule} t={t} 
+        onMarkDone={handleMarkDone} onReschedule={handleReschedule} t={t} 
       />
     </div>
   );

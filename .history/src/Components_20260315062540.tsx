@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
   RefreshCw, History, Loader2, Hash, Users, Bug, Check, CheckSquare, 
-  BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, Copy, Download, Upload, Plus
+  BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, Copy, Download, Upload
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -412,40 +412,16 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ title: '', location: '' });
   
-  // --- ЛОГИКА ДОБАВЛЕНИЯ ---
-  const [isAdding, setIsAdding] = useState(false);
-  const [addForm, setAddForm] = useState({ title: '', location: '' });
-  
   const [lastDeleted, setLastDeleted] = useState<FavoritePlace | null>(null);
   const undoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => { 
-    if (open) { 
-      setSearch(''); setEditingId(null); setLastDeleted(null); setIsAdding(false); setAddForm({ title: '', location: '' });
-    } 
-  }, [open]);
+  useEffect(() => { if (open) { setSearch(''); setEditingId(null); setLastDeleted(null); } }, [open]);
   if (!open) return null;
 
   const filteredPlaces = places.filter(p => 
     p.title.toLowerCase().includes(search.toLowerCase()) || 
     p.location.toLowerCase().includes(search.toLowerCase())
   );
-
-  const handleAddNew = () => {
-    if (!addForm.location.trim()) return;
-    const newPlace = {
-      id: Date.now().toString(),
-      title: addForm.title.trim() || t.untitled || 'Untitled',
-      location: addForm.location.trim()
-    };
-    const updated = [newPlace, ...places].sort((a, b) => a.title.localeCompare(b.title));
-    setPlaces(updated);
-    localStorage.setItem(FAV_PLACES_KEY, JSON.stringify(updated));
-    setIsAdding(false);
-    setAddForm({ title: '', location: '' });
-    toast.success(t.placeUpdated || 'Added!');
-  };
-  // -------------------------
 
   const handleDelete = (id: string) => {
     const placeToDelete = places.find(p => p.id === id);
@@ -493,20 +469,15 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
         <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">
           {onSelect ? t.selectAddress : t.dbTitle}
         </h2>
-        <div className="w-[80px] flex justify-end items-center gap-3">
+        <div className="w-[80px] flex justify-end">
           {!onSelect ? (
-            <>
-              <button onClick={(e) => {
-                e.stopPropagation();
-                const data = localStorage.getItem(FAV_PLACES_KEY);
-                if (data && data !== '[]') { navigator.clipboard.writeText(data); toast.success(t.copied); }
-              }} className="text-[var(--primary)] active:opacity-50 transition-opacity">
-                <Copy className="w-5 h-5" />
-              </button>
-              <button onClick={() => setIsAdding(!isAdding)} className="text-[var(--primary)] active:opacity-50 transition-opacity">
-                <Plus className="w-6 h-6" />
-              </button>
-            </>
+            <button onClick={(e) => {
+              e.stopPropagation();
+              const data = localStorage.getItem(FAV_PLACES_KEY);
+              if (data && data !== '[]') { navigator.clipboard.writeText(data); toast.success(t.copied); }
+            }} className="text-[var(--primary)] active:opacity-50 transition-opacity">
+              <Copy className="w-5 h-5" />
+            </button>
           ) : (
             <BookOpen className="w-5 h-5 text-white/20" />
           )}
@@ -528,36 +499,6 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
       </div>
 
       <div className="flex-1 overflow-y-auto pb-safe-24 custom-scrollbar mask-linear-gradient relative">
-        
-        {/* ФОРМА ДОБАВЛЕНИЯ НОВОГО АДРЕСА */}
-        {isAdding && (
-          <div className="px-4 py-4 border-b border-white/10 bg-[var(--bg-surface-elevated)] animate-in fade-in slide-in-from-top-2 duration-200">
-            <input 
-              value={addForm.title} 
-              onChange={e => setAddForm({...addForm, title: e.target.value})} 
-              placeholder={t.title || "Название"} 
-              className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-2 focus:border-[var(--primary)] border border-transparent transition-colors" 
-            />
-            <input 
-              value={addForm.location} 
-              onChange={e => setAddForm({...addForm, location: e.target.value})} 
-              placeholder={t.location || "Адрес"} 
-              className="w-full bg-black/50 text-white px-4 py-2.5 rounded-[10px] outline-none mb-3 focus:border-[var(--primary)] border border-transparent transition-colors" 
-            />
-            <div className="flex justify-end gap-4">
-              <button onClick={() => setIsAdding(false)} className="text-white/40 font-medium text-[15px]">{t.cancel}</button>
-              <button 
-                onClick={handleAddNew} 
-                disabled={!addForm.location.trim()} 
-                className="text-[var(--primary)] font-bold text-[15px] disabled:opacity-40 transition-opacity"
-              >
-                {t.saveBtn || 'Save'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* СПИСОК АДРЕСОВ */}
         {filteredPlaces.length === 0 ? (
            <div className="text-center py-20 text-white/20 font-medium">{t.noLocFound}</div>
         ) : (
@@ -766,17 +707,11 @@ export const ReviewScreen = ({
 // ==========================================
 // 8. TASKS LIST MODAL
 // ==========================================
-export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t }: { 
-  open: boolean; onClose: () => void; tasks: ParsedEvent[]; setTasks: (tasks: ParsedEvent[]) => void; onReschedule: (task: ParsedEvent) => void; t: Dictionary;
+export const TasksListModal = ({ open, onClose, tasks, onMarkDone, onReschedule, t }: { 
+  open: boolean; onClose: () => void; tasks: ParsedEvent[]; onMarkDone: (id: number) => void; onReschedule: (task: ParsedEvent) => void; t: Dictionary;
 }) => {
   const [activeTab, setActiveTab] = useState<'overdue' | 'upcoming'>('overdue');
   const [expandedId, setExpandedId] = useState<number | null>(null);
-
-  // --- ЛОГИКА UNDO ДЛЯ ЗАДАЧ ---
-  const [lastDoneTask, setLastDoneTask] = useState<ParsedEvent | null>(null);
-  const undoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => { if (open) { setLastDoneTask(null); } }, [open]);
 
   if (!open) return null;
 
@@ -784,24 +719,6 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
   const overdueTasks = tasks.filter(t => t.date <= todayStr).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
   const upcomingTasks = tasks.filter(t => t.date > todayStr).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
   const displayedTasks = activeTab === 'overdue' ? overdueTasks : upcomingTasks;
-
-  const handleMarkDone = (task: ParsedEvent) => {
-    const updated = tasks.filter(t => t.id !== task.id);
-    setTasks(updated); // Обновляем стейт в App.tsx
-    
-    // Запускаем таймер Undo
-    setLastDoneTask(task);
-    if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current);
-    undoTimeoutRef.current = setTimeout(() => setLastDoneTask(null), 5000);
-  };
-
-  const handleUndo = () => {
-    if (!lastDoneTask) return;
-    const restored = [lastDoneTask, ...tasks].sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
-    setTasks(restored);
-    setLastDoneTask(null);
-    if (undoTimeoutRef.current) clearTimeout(undoTimeoutRef.current);
-  };
 
   return (
     <div className="fixed inset-0 z-[400] bg-[var(--bg-main)] flex flex-col pt-safe">
@@ -814,6 +731,7 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
         <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">
           {t.tasksTitle}
         </h2>
+        {/* Пустой блок для сохранения центровки заголовка */}
         <div className="w-[80px]" />
       </div>
 
@@ -845,6 +763,7 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
         ) : (
           displayedTasks.map((task) => {
             const isOverdue = task.date <= todayStr;
+            
             return (
               <div 
                 key={task.id} 
@@ -869,7 +788,7 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
                     </button>
 
                     <button 
-                      onClick={(e) => { e.stopPropagation(); handleMarkDone(task); }}
+                      onClick={(e) => { e.stopPropagation(); onMarkDone(task.id); }}
                       className="px-5 py-2.5 text-[var(--success)] text-[15px] font-bold rounded-xl active:opacity-50 transition-opacity"
                       style={{ backgroundColor: 'rgba(var(--success-rgb), 0.15)' }}
                     >
@@ -890,16 +809,6 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
           })
         )}
       </div>
-
-      {/* ПЛАШКА UNDO ДЛЯ ЗАДАЧ */}
-      {lastDoneTask && (
-        <div className="absolute bottom-10 left-4 right-4 z-[9999] bg-[#2C2C2E] border border-white/10 rounded-[16px] p-4 flex items-center justify-between shadow-2xl animate-in slide-in-from-bottom-5 fade-in duration-300">
-          <span className="text-white text-[16px] font-medium">{t.taskCompleted}</span>
-          <button onClick={handleUndo} className="text-[var(--info)] font-bold text-[16px] active:opacity-50 transition-opacity px-4 py-2 bg-[var(--info)]/10 rounded-xl">
-            Undo
-          </button>
-        </div>
-      )}
     </div>
   );
 };

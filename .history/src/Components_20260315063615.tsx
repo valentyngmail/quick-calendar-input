@@ -528,7 +528,6 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
       </div>
 
       <div className="flex-1 overflow-y-auto pb-safe-24 custom-scrollbar mask-linear-gradient relative">
-        
         {/* ФОРМА ДОБАВЛЕНИЯ НОВОГО АДРЕСА */}
         {isAdding && (
           <div className="px-4 py-4 border-b border-white/10 bg-[var(--bg-surface-elevated)] animate-in fade-in slide-in-from-top-2 duration-200">
@@ -556,8 +555,9 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
             </div>
           </div>
         )}
+      </div>
 
-        {/* СПИСОК АДРЕСОВ */}
+      <div className="flex-1 overflow-y-auto pb-safe-24 custom-scrollbar mask-linear-gradient relative">
         {filteredPlaces.length === 0 ? (
            <div className="text-center py-20 text-white/20 font-medium">{t.noLocFound}</div>
         ) : (
