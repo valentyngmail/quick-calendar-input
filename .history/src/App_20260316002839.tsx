@@ -523,9 +523,9 @@ const VoiceCalendarApp = () => {
       {/* 2. INTERACTIVE AREA */}
       <div ref={mainRef} className="absolute top-[90px] left-0 right-0 bottom-0 flex flex-col transition-all duration-300">
         
-        {/* ИСТОРИЯ (добавлен отступ сверху pt-4, чтобы дышало) */}
+        {/* ИСТОРИЯ (добавлен отступ сверху pt-6, чтобы дышало) */}
         {phase === 'idle' && history.length > 0 && (
-          <div className={`shrink-0 overflow-x-auto flex gap-3 px-6 pb-2 pt-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-all duration-500 ${isKbOpen ? 'opacity-0 max-h-0 pointer-events-none' : 'opacity-100 max-h-[120px]'}`}>
+          <div className={`shrink-0 overflow-x-auto flex gap-3 px-6 pb-2 pt-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-all duration-500 ${isKbOpen ? 'opacity-0 max-h-0 pointer-events-none' : 'opacity-100 max-h-[120px]'}`}>
             {history.map((item, i) => (
               <SwipeableHistoryItem key={`${item.id}-${i}`} item={item} onDuplicate={handleDuplicate} onDelete={handleDeleteHistory} formatHistoryDate={formatHistoryDate} />
             ))}
@@ -596,7 +596,7 @@ const VoiceCalendarApp = () => {
                 setAppLang(next);
                 localStorage.setItem('appLang', next);
               }} 
-              className="w-[54px] h-[54px] shrink-0 rounded-full bg-[#1C1C1E]/80 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-[15px] font-medium text-white/40 hover:text-white/80 shadow-xl active:scale-95 transition-all"
+              className="w-[54px] h-[54px] shrink-0 rounded-full bg-[#1C1C1E]/80 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-[15px] font-medium text-white/50 hover:text-white/80 shadow-xl active:scale-95 transition-transform"
             >
               {appLang.toUpperCase()}
             </button>

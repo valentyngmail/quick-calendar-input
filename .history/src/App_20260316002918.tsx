@@ -596,7 +596,7 @@ const VoiceCalendarApp = () => {
                 setAppLang(next);
                 localStorage.setItem('appLang', next);
               }} 
-              className="w-[54px] h-[54px] shrink-0 rounded-full bg-[#1C1C1E]/80 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-[15px] font-medium text-white/40 hover:text-white/80 shadow-xl active:scale-95 transition-all"
+              className="w-[54px] h-[54px] shrink-0 rounded-full bg-[#1C1C1E]/80 backdrop-blur-2xl border border-white/10 flex items-center justify-center text-[15px] font-medium text-white/50 hover:text-white/80 shadow-xl active:scale-95 transition-transform"
             >
               {appLang.toUpperCase()}
             </button>
