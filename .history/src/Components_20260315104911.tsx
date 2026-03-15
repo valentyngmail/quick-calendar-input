@@ -543,8 +543,7 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
       <div className="flex-1 overflow-y-auto pb-safe-24 custom-scrollbar relative">
         {isAdding && (
           <div className="px-4 py-4 border-b border-white/5 bg-[var(--bg-main)] animate-in fade-in slide-in-from-top-2 duration-200">
-            {/* 👇 УБИРАЕМ overflow-hidden и добавляем relative z-50 👇 */}
-            <div className="bg-[var(--bg-surface)] rounded-xl mb-3 border border-white/10 shadow-sm relative z-50">
+            <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-3 border border-white/10 shadow-sm">
               <input 
                 value={addForm.title} onChange={e => setAddForm({...addForm, title: e.target.value})} placeholder={t.placeName || "Название"} 
                 className="w-full bg-transparent text-white px-4 py-3.5 outline-none border-b border-white/5 placeholder:text-white/30 text-[16px]" 
