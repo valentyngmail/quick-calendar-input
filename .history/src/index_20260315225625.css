@@ -95,15 +95,8 @@ body.voicecal-premium {
   100% { background-position: 0% 50%; }
 }
 
-/* Возврат к мягкому фиолетовому переливу */
-@keyframes gradient-shimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 .placeholder-animated::placeholder {
-  /* Мягкий переход: чуть белого -> наш лиловый -> чуть белого */
+  /* Градиент: полупрозрачный белый -> фирменный лиловый -> полупрозрачный белый */
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.2) 0%,
@@ -112,10 +105,12 @@ body.voicecal-premium {
   );
   background-size: 200% 100%;
   color: transparent;
+  
+  /* Применяем градиент только к тексту (вырезаем по контуру букв) */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   
-  /* 5 секунд — идеальный темп, чтобы не раздражать глаз */
-  animation: gradient-shimmer 5s ease-in-out infinite;
+  /* Плавная бесконечная анимация */
+  animation: gradient-shimmer 4s ease-in-out infinite;
 }
