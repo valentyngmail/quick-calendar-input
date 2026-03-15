@@ -138,7 +138,6 @@ export const DICT: Record<string, Record<string, string>> = {
     backupSection: 'Данные и бэкап',
     placeName: 'Название',
     address: 'Адрес',
-    back: 'Назад'
   },
   en: {
     subtitle: 'What is the plan?',
@@ -218,7 +217,6 @@ export const DICT: Record<string, Record<string, string>> = {
     backupSection: 'Data & Backup',
     placeName: 'Place Name',
     address: 'Address',
-    back: 'Back'
   },
   de: {
     subtitle: 'Was ist der Plan?',
@@ -298,6 +296,5 @@ export const DICT: Record<string, Record<string, string>> = {
     backupSection: 'Daten & Backup',
     placeName: 'Ortsname',
     address: 'Adresse',
-    back: 'Zurück'
   }
 };

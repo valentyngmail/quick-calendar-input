@@ -153,18 +153,8 @@ const VoiceCalendarApp = () => {
       document.documentElement.style.setProperty('--vv-height', `${vv.height}px`);
       document.documentElement.style.setProperty('--vv-top', `${vv.offsetTop}px`);
       
-      const kbHeight = window.innerHeight - vv.height;
-      const isKb = kbHeight > 50;
+      const isKb = (window.innerHeight - vv.height) > 50;
       setIsKbOpen(isKb);
-
-      // Двигаем Док в зависимости от клавиатуры
-      if (dockRef.current) {
-        if (isKb) {
-          dockRef.current.style.bottom = `${kbHeight + 16}px`; // Оставляем комфортный отступ над клавиатурой
-        } else {
-          dockRef.current.style.bottom = 'calc(env(safe-area-inset-bottom) + 8px)'; // Уменьшили с 16 до 8, чтобы кнопка села ЕЩЕ НИЖЕ
-        }
-      }
     };
     
     // Блокируем системный прыжок body, запрещаем скролл
@@ -531,7 +521,7 @@ const VoiceCalendarApp = () => {
       </div>
 
       {/* 2. INTERACTIVE AREA */}
-      <div ref={mainRef} className="absolute top-[64px] left-0 right-0 bottom-0 flex flex-col transition-all duration-300">
+      <div ref={mainRef} className="absolute top-[90px] left-0 right-0 bottom-0 flex flex-col transition-all duration-300">
         
         {/* ИСТОРИЯ (добавлен отступ сверху pt-2, чтобы дышало) */}
         {phase === 'idle' && history.length > 0 && (
@@ -586,9 +576,9 @@ const VoiceCalendarApp = () => {
         </div>
       </div>
 
-      {/* 3. DOCK  */}
+      {/* 3. DOCK */}
       {phase === 'idle' && (
-        <div ref={dockRef} className="absolute left-6 right-6 flex justify-center z-50 transition-all duration-300" style={{ bottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}>
+        <div className="absolute left-6 right-6 flex justify-center bottom-safe-16 z-50 transition-all duration-300">
           <div className="bg-[#1C1C1E]/80 backdrop-blur-2xl border border-white/10 rounded-full p-1.5 flex items-center w-full max-w-sm shadow-2xl">
             
             {/* Круглый переключатель языка */}

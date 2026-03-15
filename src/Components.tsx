@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
-  History, Loader2, Hash, Users, Bug, Check, CheckSquare, 
+  History, Loader2, Hash, Users, Bug, Check, CheckSquare, CheckCircle2,
   BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, 
-  Copy, Download, Upload, Plus, ArrowUp, ZapOff, ChevronLeft, CheckCircle2
+  Copy, Download, Upload, Plus, ArrowUp, ZapOff
 } from 'lucide-react';
-
 import { toast } from 'sonner';
 
 import { AppSettings, FavoritePlace, ParsedEvent } from './Core';
@@ -530,10 +529,7 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
   return (
     <div className="fixed inset-0 z-[300] bg-[var(--bg-main)] flex flex-col pt-safe">
       <div className="flex items-center justify-between px-4 h-16 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0 z-20">
-        <button onClick={onClose} className="w-[100px] flex items-center text-[var(--primary)] text-[17px] active:opacity-50 transition-opacity -ml-2">
-          <ChevronLeft size={24} className="mr-0.5" />
-          <span className="mt-[1px]">{t.back || 'Back'}</span>
-        </button>
+        <button onClick={onClose} className="w-[80px] text-left text-[var(--primary)] text-[17px] font-medium active:opacity-50 transition-opacity">{t.cancel}</button>
         <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">{onSelect ? t.selectAddress : t.dbTitle}</h2>
         <div className="w-[80px] flex justify-end items-center gap-3">
           {!onSelect ? (
@@ -752,7 +748,7 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
     localStorage.setItem('completedTasks', JSON.stringify(updatedCompleted));
   };
 
-  // 2. Восстановление задачи (перенос  наверх)
+  // 2. Восстановление задачи (перенос наверх)
   const handleRestore = (task: ParsedEvent) => {
     const updatedCompleted = completedTasks.filter(t => t.id !== task.id);
     setCompletedTasks(updatedCompleted);
@@ -774,12 +770,8 @@ export const TasksListModal = ({ open, onClose, tasks, setTasks, onReschedule, t
       
       {/* HEADER */}
       <div className="flex items-center justify-between px-4 h-16 bg-[var(--bg-main)]/80 backdrop-blur-xl sticky top-0 shrink-0 z-20">
-        <button 
-          onClick={onClose} 
-          className="w-[100px] flex items-center text-[var(--primary)] text-[17px] active:opacity-50 transition-opacity -ml-2"
-        >
-          <ChevronLeft size={24} className="mr-0.5" />
-          <span className="mt-[1px]">{t.back || 'Back'}</span>
+        <button onClick={onClose} className="w-[80px] text-left text-[var(--primary)] text-[17px] font-medium active:opacity-50 transition-opacity">
+          {t.cancel || 'Cancel'}
         </button>
         <h2 className="flex-1 text-center text-[17px] font-semibold text-white tracking-tight">
           {t.tasksTitle || "Meine Aufgaben"}
