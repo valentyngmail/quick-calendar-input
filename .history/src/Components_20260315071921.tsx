@@ -270,18 +270,7 @@ export const SettingsModal = ({
 // ==========================================
 // 4. PLACES DATABASE MODAL (iOS TableView Edition)
 // ==========================================
-interface OSMItem {
-  display_name: string;
-  name?: string;
-  address?: {
-    road?: string;
-    pedestrian?: string;
-    house_number?: string;
-    city?: string;
-    town?: string;
-    village?: string;
-  };
-}
+
 interface SwipeablePlaceItemProps {
   place: FavoritePlace;
   onSelect?: (location: string) => void;
@@ -318,7 +307,7 @@ const SwipeablePlaceItem = ({
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`, { headers: { 'Accept-Language': `${lang},en;q=0.9` }});
       if (!res.ok) return;
       const data = await res.json();
-      const sugs = data.map((item: OSMItem) => {
+      const sugs = data.map((item: any) => {
         const addr = item.address;
         if (!addr) return item.display_name.split(',').slice(0, 3).join(',');
         const street = addr.road || addr.pedestrian || item.name || '';
@@ -479,7 +468,7 @@ export const PlacesDatabaseModal = ({ open, onClose, places, setPlaces, onSelect
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`, { headers: { 'Accept-Language': `${lang},en;q=0.9` }});
       if (!res.ok) return;
       const data = await res.json();
-      const sugs = data.map((item: OSMItem) => {
+      const sugs = data.map((item: any) => {
         const addr = item.address;
         if (!addr) return item.display_name.split(',').slice(0, 3).join(',');
         const street = addr.road || addr.pedestrian || item.name || '';
