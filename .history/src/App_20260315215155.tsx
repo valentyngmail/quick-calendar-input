@@ -588,7 +588,7 @@ const VoiceCalendarApp = () => {
 
       {/* 3. DOCK */}
       {phase === 'idle' && (
-        <div ref={dockRef} className="absolute left-6 right-6 flex justify-center z-50 transition-all duration-300" style={{ bottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}>
+        <div ref={dockRef} className="absolute left-6 right-6 flex justify-center bottom-4 z-50 transition-all duration-300">
           <div className="bg-[#1C1C1E]/80 backdrop-blur-2xl border border-white/10 rounded-full p-1.5 flex items-center w-full max-w-sm shadow-2xl">
             
             {/* Круглый переключатель языка */}
