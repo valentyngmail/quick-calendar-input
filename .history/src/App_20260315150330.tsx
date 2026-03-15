@@ -654,8 +654,7 @@ const VoiceCalendarApp = () => {
       <SettingsModal 
         open={showSettings} onClose={() => setShowSettings(false)} settings={settings} onSave={(s: AppSettings) => { setSettings(s); saveSettings(s); }} 
         onOpenSyncModal={() => setShowSyncModal(true)} showDebug={showDebug} setShowDebug={setShowDebug}
-        appLang={appLang} setAppLang={setAppLang} skipTranslation={skipTranslation} setSkipTranslation={setSkipTranslation} 
-        testMode={testMode} setTestMode={setTestMode} t={t} /* <-- ДОБАВИЛИ TEST MODE СЮДА */
+        appLang={appLang} setAppLang={setAppLang} skipTranslation={skipTranslation} setSkipTranslation={setSkipTranslation} t={t}
       />
 
       <SyncModal

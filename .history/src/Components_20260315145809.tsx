@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
-  History, Loader2, Hash, Users, Bug, Check, CheckSquare, CheckCircle2,
+  History, Loader2, Hash, Users, Bug, Check, CheckSquare, 
   BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, 
   Copy, Download, Upload, Plus, ArrowUp, ZapOff
 } from 'lucide-react';

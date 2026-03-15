@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
-  History, Loader2, Hash, Users, Bug, Check, CheckSquare, CheckCircle2,
+  History, Loader2, Hash, Users, Bug, Check, CheckSquare, 
   BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, 
   Copy, Download, Upload, Plus, ArrowUp, ZapOff
 } from 'lucide-react';
@@ -210,18 +210,13 @@ export const SettingsModal = ({
           </SettingsRow>
         </div>
 
-        <p className="text-[13px] text-white/40 uppercase mt-10 mb-2 ml-4 tracking-tight">{t.webhooksSection || 'INTEGRATIONEN (WEBHOOKS)'}</p>
+        <p className="text-[13px] text-white/40 uppercase mt-10 mb-2 ml-4 tracking-tight">{t.webhooksSection}</p>
         <div className="bg-[var(--bg-surface)] rounded-xl px-4 overflow-hidden">
           <SettingsRow label="Decode Webhook" icon={<LinkIcon />} bgColor="bg-[#8E8E93]">
             <input type="url" value={local.decodeWebhook} onFocus={handleInputFocus} onChange={e => setLocal({...local, decodeWebhook: e.target.value})} className="bg-transparent text-right outline-none text-[var(--info)] text-[15px] w-full placeholder:text-white/20 truncate" placeholder="https://hook.make.com/..." />
           </SettingsRow>
           <SettingsRow label="Save Webhook" icon={<LinkIcon />} bgColor="bg-[#8E8E93]">
             <input type="url" value={local.saveWebhook} onFocus={handleInputFocus} onChange={e => setLocal({...local, saveWebhook: e.target.value})} className="bg-transparent text-right outline-none text-[var(--info)] text-[15px] w-full placeholder:text-white/20 truncate" placeholder="https://hook.make.com/..." />
-          </SettingsRow>
-          
-          {/* ПЕРЕКЛЮЧАТЕЛЬ ТЕСТОВОГО РЕЖИМА */}
-          <SettingsRow label={t.testModeLabel || "Test Mode (Skip API)"} icon={<ZapOff />} bgColor="bg-[#AF52DE]">
-            <Toggle checked={testMode} onChange={(v) => { setTestMode(v); localStorage.setItem('testMode', String(v)); }} />
           </SettingsRow>
         </div>
 
