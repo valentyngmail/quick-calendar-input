@@ -312,8 +312,8 @@ const VoiceCalendarApp = () => {
 
       // 1. Собираем описание: Сначала ответ ИИ, затем оригинальный текст
       let finalDescription = data.description 
-        ? `${data.description}\n\n🗣️ ${text}`
-        : `🗣️ ${text}`;
+        ? `${data.description}\n\n🗣️ Original: ${text}`
+        : `🗣️ Original: ${text}`;
         
       // 2. Добавляем футер
       if (tokens) {
