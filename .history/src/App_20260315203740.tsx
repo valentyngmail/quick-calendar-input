@@ -467,11 +467,8 @@ const VoiceCalendarApp = () => {
 
   return (
     <div 
-      className="absolute left-0 right-0 bg-[var(--bg-main)] text-white overflow-hidden flex flex-col" 
-      style={{ 
-        height: 'var(--vv-height, 100dvh)', 
-        top: 'var(--vv-top, 0px)' 
-      }}
+      className="fixed inset-0 bg-[var(--bg-main)] text-white overflow-hidden flex flex-col" 
+      style={{ height: 'var(--vv-height, 100dvh)' }}
     >
       
       {/* 1. HEADER (Исправлена логика просрочки!) */}
