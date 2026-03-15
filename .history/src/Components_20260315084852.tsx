@@ -827,7 +827,6 @@ export const ReviewScreen = ({
               </button>
             )}
           </InputRow>
-          
         </div>
 
         <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6">

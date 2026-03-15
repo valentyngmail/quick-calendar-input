@@ -817,17 +817,10 @@ export const ReviewScreen = ({
               value={parsedEvent.guests} 
               onFocus={handleInputFocus}
               onChange={e => setParsedEvent({...parsedEvent, guests: e.target.value})} 
-              className="bg-transparent text-right outline-none text-white w-full min-w-0 placeholder:text-white/10" 
+              className="bg-transparent text-right outline-none text-white w-full placeholder:text-white/10" 
               placeholder="email1, email2" 
             />
-            {/* Кнопка быстрой очистки гостей */}
-            {parsedEvent.guests && (
-              <button onClick={() => setParsedEvent({...parsedEvent, guests: ''})} className="ml-2 p-1 text-white/30 hover:text-white/60 active:scale-95 transition-all">
-                <X size={18} />
-              </button>
-            )}
           </InputRow>
-          
         </div>
 
         <div className="bg-[var(--bg-surface)] rounded-xl overflow-hidden mb-6">
