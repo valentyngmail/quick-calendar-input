@@ -3,7 +3,7 @@ import {
   AlertTriangle, Settings, X, Globe, Mail, Lock, Link as LinkIcon, 
   History, Loader2, Hash, Users, Bug, Check, CheckSquare, 
   BookOpen, Search, MapPin, Edit2, Trash2, Calendar, Clock, ArrowRight, 
-  Copy, Download, Upload, Plus, ArrowUp, CheckCircle2
+  Copy, Download, Upload, Plus, ArrowUp
 } from 'lucide-react';
 import { toast } from 'sonner';
 
