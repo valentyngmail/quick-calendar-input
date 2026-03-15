@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    /* ==========================================
+       🎨 MASTER COLOR PALETTE
+       ========================================== */
+       
+    /* БРЕНД (Лиловый / System Indigo) */
+    --primary: #5E5CE6;
+    --primary-rgb: 94, 92, 230; /* Для полупрозрачных фонов */
+
+    /* УСПЕХ (Зеленый для выполненных задач и галочек) */
+    --success: #34C759;
+    --success-rgb: 52, 199, 89;
+
+    /* ОШИБКА / ТРЕВОГА (Красный для просрочек) */
+    --danger: #FF453A;
+    
+    /* ПОВЕРХНОСТИ (iOS Dark Mode) */
+    --bg-main: #000000;
+    --bg-surface: #1C1C1E;
+    --bg-surface-elevated: #2C2C2E;
+    --bg-surface-glass: rgba(28, 28, 30, 0.75);
+
+    /* ЭФФЕКТЫ */
+    --glow-primary: 0 0 30px rgba(var(--primary-rgb), 0.4);
+
+    /* Добавь это к остальным переменным в :root */
+    --success: #32D74B;       /* Чистый iOS Green */
+    --success-rgb: 50, 215, 75; 
+    --info: #0A84FF;          /* Чистый iOS Blue */
+    --info-rgb: 10, 132, 255;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--bg-main)] text-white font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .glow-primary { box-shadow: var(--glow-primary); }
+
+  /* --- Умные классы для iOS отступов (Safe Areas) --- */
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .pb-safe-16 { padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
+  .pb-safe-24 { padding-bottom: calc(env(safe-area-inset-bottom) + 24px); }
+  .h-header { height: calc(env(safe-area-inset-top) + 60px); }
+  .bottom-safe-16 { bottom: calc(env(safe-area-inset-bottom) + 16px); }
+  .text-align-last-right { text-align-last: right; }
+}
+
+/* ==========================================
+   VOICECAL PREMIUM UI
+   ========================================== */
+body.voicecal-premium {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-main);
+  color: #FFFFFF;
+}
+
+/* Скрытие скроллбара для красивых списков */
+.custom-scrollbar::-webkit-scrollbar { display: none; }
+.custom-scrollbar { scrollbar-width: none; }
+
+/* Эффект матового стекла (Glassmorphism) */
+.glass-panel {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Градиент-маска: список плавно уходит в темноту снизу */
+.mask-linear-gradient {
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+/* ==========================================
+   APPLE INTELLIGENCE TEXT EFFECT
+   ========================================== */
+@keyframes text-shimmer-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.premium-input, 
+.premium-input::placeholder {
+  -webkit-text-stroke: 0;
+  
+  /* Плотный перелив с лиловым сердцем */
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 1) 40%,
+    var(--primary) 50%,
+    rgba(255, 255, 255, 1) 60%,
+    rgba(255, 255, 255, 0.4) 100%
+  );
+  background-size: 200% auto;
+  
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  
+  animation: text-shimmer-flow 5s ease-in-out infinite;
+  
+  /* Легкое свечение позади текста */
+  filter: drop-shadow(0 0 12px rgba(var(--primary-rgb), 0.25));
+  
+  /* Фирменный курсор */
+  caret-color: var(--primary);
+}
